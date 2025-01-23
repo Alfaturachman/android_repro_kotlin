@@ -12,6 +12,12 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
+        android:id="@+id/nav_pengelola"
+        android:name="com.example.repro.ui.pengelola.PengelolaFragment"
+        android:label="@string/menu_pengelola"
+        tools:layout="@layout/fragment_pengelola" />
+
+    <fragment
         android:id="@+id/nav_gallery"
         android:name="com.example.repro.ui.gallery.GalleryFragment"
         android:label="@string/menu_gallery"

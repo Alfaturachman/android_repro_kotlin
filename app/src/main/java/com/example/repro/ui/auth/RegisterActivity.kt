@@ -78,7 +78,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun registerUser(namaPemilik: String, namaUsaha: String, noHp: String, alamat: String, email: String, password: String) {
-        val apiInterface = RetrofitClient.getRetrofitInstance().create(ApiService::class.java)
+        val apiInterface = RetrofitClient.retrofitInstance.create(ApiService::class.java)
 
         Log.d(TAG, "Data sebelum dikirim: namaPemilik=$namaPemilik, namaUsaha=$namaUsaha, noHp=$noHp, alamat=$alamat, email=$email, password=$password")
 

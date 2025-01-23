@@ -78,7 +78,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginUser(email: String, password: String) {
-        val apiInterface = RetrofitClient.getRetrofitInstance().create(ApiService::class.java)
+        val apiInterface = RetrofitClient.retrofitInstance.create(ApiService::class.java)
 
         // Buat object JSON
         val requestData = mapOf(
