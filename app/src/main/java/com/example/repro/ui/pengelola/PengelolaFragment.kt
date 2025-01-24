@@ -6,17 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
 import com.example.repro.api.ApiService
 import com.example.repro.api.RetrofitClient
 import com.example.repro.api.ApiResponse
+import com.example.repro.databinding.FragmentPengelolaBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class PengelolaFragment : Fragment() {
+
+    private var _binding: FragmentPengelolaBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var recyclerView: RecyclerView
     private var adapter: PemasokAdapter? = null
 
@@ -25,21 +31,22 @@ class PengelolaFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate layout fragment
-        val root = inflater.inflate(R.layout.fragment_pengelola, container, false)
+        // Inflate layout fragment and set up binding
+        _binding = FragmentPengelolaBinding.inflate(inflater, container, false)
+        val root: View = binding.root
 
-        // Inisialisasi RecyclerView
-        recyclerView = root.findViewById(R.id.recyclerViewDaftarPemasok)
+        // Initialize RecyclerView
+        recyclerView = binding.recyclerViewDaftarPemasok
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        // Fetch data dari API
+        // Fetch data from API
         fetchPemasokData()
 
         return root
     }
 
     private fun fetchPemasokData() {
-        // Menggunakan instance Retrofit dari RetrofitClient
+        // Using Retrofit instance from RetrofitClient
         val apiService = RetrofitClient.retrofitInstance.create(ApiService::class.java)
 
         val call = apiService.getPemasokList()
@@ -49,7 +56,7 @@ class PengelolaFragment : Fragment() {
                 response: Response<ApiResponse<List<Pemasok>>>
             ) {
                 if (response.isSuccessful && response.body()?.status == true) {
-                    // Data berhasil diambil
+                    // Data successfully fetched
                     val pemasokList = response.body()?.data ?: emptyList()
                     adapter = PemasokAdapter(requireContext(), pemasokList)
                     recyclerView.adapter = adapter
@@ -59,9 +66,14 @@ class PengelolaFragment : Fragment() {
             }
 
             override fun onFailure(call: Call<ApiResponse<List<Pemasok>>>, t: Throwable) {
-                // Handle kegagalan mengambil data
+                // Handle failure in fetching data
                 Toast.makeText(context, "Gagal mengambil data: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
