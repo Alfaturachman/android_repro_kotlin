@@ -1,5 +1,6 @@
 package com.example.repro
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.Menu
 import com.google.android.material.snackbar.Snackbar
@@ -12,37 +13,56 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.example.repro.databinding.ActivityMainBinding
+import com.example.repro.databinding.NavHeaderMainBinding
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var mainBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        // Menggunakan binding untuk activity_main.xml
+        mainBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mainBinding.root)
 
-        setSupportActionBar(binding.appBarMain.toolbar)
+        // Set toolbar
+        setSupportActionBar(mainBinding.appBarMain.toolbar)
 
-        binding.appBarMain.fab.setOnClickListener { view ->
+        // Floating Action Button (FAB) action
+        mainBinding.appBarMain.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null)
                 .setAnchorView(R.id.fab).show()
         }
-        val drawerLayout: DrawerLayout = binding.drawerLayout
-        val navView: NavigationView = binding.navView
+
+        // Check SharedPreferences
+        val sharedPreferences: SharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
+        val userLevel = sharedPreferences.getString("level", null)
+        val userNama = sharedPreferences.getString("nama", null)
+
+        // Drawer dan NavigationView setup
+        val drawerLayout: DrawerLayout = mainBinding.drawerLayout
+        val navView: NavigationView = mainBinding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
+        // Konfigurasi AppBar
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
+                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow, R.id.nav_pemasok, R.id.nav_pengelola
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        // Mengakses elemen dalam nav_header_main.xml
+        val headerView = navView.getHeaderView(0)
+        val navHeaderBinding = NavHeaderMainBinding.bind(headerView)
+
+        // Set properti di header (contoh)
+        navHeaderBinding.imageView.setImageResource(R.mipmap.ic_launcher_round)
+        navHeaderBinding.tvNavNama.text = userNama
+        navHeaderBinding.tvNavEmail.text = userLevel
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

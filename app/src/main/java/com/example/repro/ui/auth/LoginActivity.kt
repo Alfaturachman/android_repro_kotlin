@@ -107,15 +107,20 @@ class LoginActivity : AppCompatActivity() {
                             Log.d("LoginActivity", "Login successful: $result")
                             Toast.makeText(this@LoginActivity, "Login berhasil", Toast.LENGTH_SHORT).show()
 
-                            // Parse response to get userId, email, and level
+                            // Parse response to get userId, email, level, and name from user_details
                             val jsonResponse = JSONObject(result)
                             val userEmail = jsonResponse.getString("email")
                             val userId = jsonResponse.getString("id_user")
                             val userLevel = jsonResponse.getString("level")
 
+                            // Ambil data dari objek user_details
+                            val userDetails = jsonResponse.getJSONObject("user_details")
+                            val userNama = userDetails.getString("nama")
+
                             Log.d("SharedPreferences", "User ID: $userId")
                             Log.d("SharedPreferences", "User Email: $userEmail")
                             Log.d("SharedPreferences", "User Level: $userLevel")
+                            Log.d("SharedPreferences", "User Nama: $userNama")
 
                             // Save user data in SharedPreferences
                             val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
@@ -123,6 +128,7 @@ class LoginActivity : AppCompatActivity() {
                             editor.putString("id_user", userId)
                             editor.putString("email", userEmail)
                             editor.putString("level", userLevel)
+                            editor.putString("nama", userNama)
                             editor.apply()
 
                             // Redirect to MainActivity
