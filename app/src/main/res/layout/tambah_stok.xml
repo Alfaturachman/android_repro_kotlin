@@ -34,121 +34,107 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!-- Form Card -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cardView"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp"
-                android:layout_margin="16dp"
-                app:layout_constraintTop_toBottomOf="@id/header"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                android:orientation="vertical">
 
-                <LinearLayout
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Silahkan untuk menambahkan stok ban bekas"
+                    android:textSize="14sp" />
+
+                <!-- Input Tanggal -->
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+                    android:layout_marginTop="8dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:hint="Tanggal">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="Silahkan untuk menambahkan stok ban bekas"
-                        android:textSize="14sp" />
-
-                    <!-- Input Tanggal -->
-                    <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etTanggal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:hint="Tanggal">
+                        android:inputType="date" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etTanggal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="date" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                <!-- Input Jenis Kendaraan -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:hint="Jenis Kendaraan">
 
-                    <!-- Input Jenis Kendaraan -->
-                    <com.google.android.material.textfield.TextInputLayout
+                    <AutoCompleteTextView
+                        android:id="@+id/etJenisKendaraan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                        android:hint="Jenis Kendaraan">
+                        android:inputType="none"
+                        app:simpleItems="@array/simple_items" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <AutoCompleteTextView
-                            android:id="@+id/etJenisKendaraan"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="none"
-                            app:simpleItems="@array/simple_items" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                <!-- Input Jumlah Stok -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:hint="Jumlah Stok (kg)">
 
-                    <!-- Input Jumlah Stok -->
-                    <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etJumlahStok"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:hint="Jumlah Stok (kg)">
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etJumlahStok"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                <!-- Input Harga Ban Bekas per kg -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:hint="Harga Ban Bekas per kg">
 
-                    <!-- Input Harga Ban Bekas per kg -->
-                    <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etHargaPerKg"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:hint="Harga Ban Bekas per kg">
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etHargaPerKg"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                <!-- Input Total Harga -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:hint="Total Harga Ban Bekas">
 
-                    <!-- Input Total Harga -->
-                    <com.google.android.material.textfield.TextInputLayout
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etTotalHarga"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:hint="Total Harga Ban Bekas">
+                        android:inputType="numberDecimal"
+                        android:enabled="false" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etTotalHarga"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
-                            android:enabled="false" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <!-- Button Simpan -->
-                    <Button
-                        android:id="@+id/btn_simpan"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Simpan"
-                        android:textSize="16sp"
-                        android:backgroundTint="@color/purple_700"
-                        android:textColor="@android:color/white"
-                        style="@style/Widget.Material3.Button.Icon" />
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
+                <!-- Button Simpan -->
+                <Button
+                    android:id="@+id/btn_simpan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Simpan"
+                    android:textSize="16sp"
+                    android:backgroundTint="@color/purple_700"
+                    android:textColor="@android:color/white"
+                    style="@style/Widget.Material3.Button.Icon" />
+            </LinearLayout>
 
         </LinearLayout>
 
