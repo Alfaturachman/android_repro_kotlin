@@ -102,13 +102,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:hint="Email"
-                    app:shapeAppearanceOverlay="@style/RoundedTextInputLayout">
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etEmail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
                         android:drawablePadding="8dp"
                         android:inputType="textEmailAddress" />
 
@@ -120,14 +119,13 @@
                     android:layout_marginBottom="16dp"
                     android:hint="Password"
                     app:endIconMode="password_toggle"
-                    app:shapeAppearanceOverlay="@style/RoundedTextInputLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     app:startIconCheckable="true">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etPassword"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@android:color/transparent"
                         android:drawablePadding="8dp"
                         android:inputType="textPassword" />
 

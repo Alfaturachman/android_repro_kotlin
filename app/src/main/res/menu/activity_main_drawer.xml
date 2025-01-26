@@ -11,12 +11,12 @@
 
         <item
             android:id="@+id/nav_pengelola"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_task"
             android:title="@string/menu_pengelola" />
 
         <item
             android:id="@+id/nav_pemasok"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_task"
             android:title="@string/menu_pemasok" />
 
         <item
