@@ -16,6 +16,12 @@
         android:theme="@style/Theme.Repro"
         tools:targetApi="31">
         <activity
+            android:name=".ui.harga_ban.tambah.TambahHargaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.harga_ban.edit.EditHargaActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.pemasok.TambahStokActivity"
             android:exported="false" />
         <activity
