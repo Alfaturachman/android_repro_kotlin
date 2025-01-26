@@ -18,6 +18,12 @@
         tools:layout="@layout/fragment_pengelola" />
 
     <fragment
+        android:id="@+id/nav_harga_ban"
+        android:name="com.example.repro.ui.harga_ban.HargaBanFragment"
+        android:label="@string/menu_harga_ban"
+        tools:layout="@layout/fragment_harga_ban" />
+
+    <fragment
         android:id="@+id/nav_pemasok"
         android:name="com.example.repro.ui.pemasok.PemasokFragment"
         android:label="@string/menu_pemasok"

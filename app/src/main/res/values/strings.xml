@@ -15,4 +15,5 @@
 
     <string name="menu_pemasok">Pemasok</string>
     <string name="menu_pengelola">Pengelola</string>
+    <string name="menu_harga_ban">Harga Ban</string>
 </resources>

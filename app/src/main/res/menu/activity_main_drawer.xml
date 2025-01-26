@@ -20,6 +20,11 @@
             android:title="@string/menu_pemasok" />
 
         <item
+            android:id="@+id/nav_harga_ban"
+            android:icon="@drawable/ic_basket"
+            android:title="@string/menu_harga_ban" />
+
+        <item
             android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/menu_gallery" />
