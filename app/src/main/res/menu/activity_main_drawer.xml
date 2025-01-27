@@ -10,29 +10,19 @@
             android:title="@string/menu_home" />
 
         <item
-            android:id="@+id/nav_pengelola"
-            android:icon="@drawable/ic_task"
-            android:title="@string/menu_pengelola" />
+            android:id="@+id/nav_pemasok"
+            android:icon="@drawable/ic_description"
+            android:title="@string/menu_pemasok" />
 
         <item
-            android:id="@+id/nav_pemasok"
-            android:icon="@drawable/ic_task"
-            android:title="@string/menu_pemasok" />
+            android:id="@+id/nav_pengelola"
+            android:icon="@drawable/ic_description"
+            android:title="@string/menu_pengelola" />
 
         <item
             android:id="@+id/nav_harga_ban"
             android:icon="@drawable/ic_basket"
             android:title="@string/menu_harga_ban" />
-
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
-
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
 
         <item
             android:id="@+id/nav_logout"

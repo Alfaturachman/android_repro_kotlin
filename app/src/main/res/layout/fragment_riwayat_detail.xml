@@ -30,9 +30,10 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:adjustViewBounds="true"
-                android:scaleType="centerInside"
                 android:background="?android:attr/selectableItemBackground"
-                android:src="@drawable/ic_back" />
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_back"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
             <TextView
                 android:id="@+id/title_text"
