@@ -4,7 +4,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:background="#f2f2f2f2">
 
     <androidx.cardview.widget.CardView
     android:id="@+id/header"
@@ -19,36 +20,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:paddingHorizontal="@dimen/activity_horizontal_margin"
+            android:paddingVertical="12dp">
 
-        <ImageButton
-            android:id="@+id/btn_kembali"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:adjustViewBounds="true"
-            android:background="?android:attr/selectableItemBackground"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_arrow_left" />
+            <ImageButton
+                android:id="@+id/btn_kembali"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerInside"
+                android:background="?android:attr/selectableItemBackground"
+                android:src="@drawable/ic_back" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Tambah Stok"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/title_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:gravity="center"
+                android:text="Tambah Stok"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/imageView546"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:adjustViewBounds="true"
-            android:scaleType="fitXY" />
+            <ImageView
+                android:id="@+id/imageView546"
+                android:layout_width="28dp"
+                android:layout_height="28dp" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
@@ -92,18 +93,17 @@
             android:textColor="@color/black"
             android:textSize="14sp" />
 
-        <EditText
-            android:id="@+id/etJenisKendaraan"
+        <Spinner
+            android:id="@+id/spinnerJenisKendaraan"
             android:layout_width="match_parent"
             android:layout_height="42dp"
             android:layout_marginBottom="16dp"
-            android:background="@drawable/custom_edit_text"
-            android:ems="10"
-            android:hint="Pilih Jenis Kendaraan"
-            android:inputType="text"
-            android:padding="8dp"
-            android:paddingStart="16dp"
             android:textSize="14sp"
+            android:background="@drawable/custom_edit_text"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:spinnerMode="dropdown"
+            android:dropDownWidth="match_parent"
             tools:ignore="TouchTargetSizeCheck" />
 
         <TextView

@@ -16,4 +16,12 @@
     <string name="menu_pemasok">Pemasok</string>
     <string name="menu_pengelola">Pengelola</string>
     <string name="menu_harga_ban">Harga Ban</string>
+
+    <string-array name="jenis_kendaraan_array">
+        <item>Mobil</item>
+        <item>Motor</item>
+        <item>Truk</item>
+        <item>Bus</item>
+        <item>Sepeda</item>
+    </string-array>
 </resources>
