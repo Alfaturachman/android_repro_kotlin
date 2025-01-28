@@ -104,9 +104,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Daftar Stok Pemasok"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginBottom="8dp"
+                android:text="Daftar Stok Pemasok"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
 

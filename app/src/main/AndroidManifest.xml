@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -16,6 +18,20 @@
         android:theme="@style/Theme.Repro"
         tools:targetApi="31">
         <activity
+            android:name=".ui.auth.LoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Repro.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Repro.NoActionBar" />
+        <activity
             android:name=".ui.pengelola.ambil.AmbilStokActivity"
             android:exported="false" />
         <activity
@@ -28,27 +44,13 @@
             android:name=".ui.pemasok.TambahStokActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.auth.LoginActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Repro.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ui.auth.LogoutActivity"
-            android:exported="false"
-            tools:ignore="Instantiatable" />
-        <activity
             android:name=".ui.auth.RegisterActivity"
             android:exported="true"
             android:theme="@style/Theme.Repro.NoActionBar" />
         <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Repro.NoActionBar" />
+            android:name=".ui.auth.LogoutActivity"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
     </application>
 
 </manifest>
