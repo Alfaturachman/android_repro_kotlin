@@ -1,9 +1,11 @@
 package com.example.repro.ui.pengelola
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -14,6 +16,8 @@ import com.example.repro.api.ApiService
 import com.example.repro.api.RetrofitClient
 import com.example.repro.api.ApiResponse
 import com.example.repro.databinding.FragmentPengelolaBinding
+import com.example.repro.ui.pemasok.TambahStokActivity
+import com.example.repro.ui.pengelola.ambil.AmbilStokActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,6 +42,11 @@ class PengelolaFragment : Fragment() {
         // Initialize RecyclerView
         recyclerView = binding.recyclerViewDaftarPemasok
         recyclerView.layoutManager = LinearLayoutManager(context)
+
+        binding.btnAmbilStok.setOnClickListener {
+            val intent = Intent(context, AmbilStokActivity::class.java)
+            startActivity(intent)
+        }
 
         // Fetch data from API
         fetchPemasokData()

@@ -30,7 +30,8 @@
                 android:adjustViewBounds="true"
                 android:background="?android:attr/selectableItemBackground"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_arrow_left" />
+                android:src="@drawable/ic_arrow_left"
+                tools:ignore="TouchTargetSizeCheck" />
 
             <TextView
                 android:id="@+id/textView"

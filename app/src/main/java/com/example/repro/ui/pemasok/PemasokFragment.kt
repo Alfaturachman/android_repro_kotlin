@@ -5,11 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.repro.R
+import com.example.repro.databinding.FragmentPemasokBinding
 import com.example.repro.ui.pemasok.TambahStokActivity
 
 class PemasokFragment : Fragment() {
@@ -19,29 +17,28 @@ class PemasokFragment : Fragment() {
     }
 
     private val viewModel: PemasokViewModel by viewModels()
+    private var _binding: FragmentPemasokBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val rootView = inflater.inflate(R.layout.fragment_pemasok, container, false)
+    ): View {
+        // Gunakan View Binding
+        _binding = FragmentPemasokBinding.inflate(inflater, container, false)
+        val root = binding.root
 
-        // Menangani klik pada Button btnTambahStok
-        val btnTambahStok = rootView.findViewById<Button>(R.id.btnTambahStok)
-        btnTambahStok.setOnClickListener {
-            // Menampilkan Toast sebagai pemberitahuan
-            Toast.makeText(context, "Tambah Stok Diklik!", Toast.LENGTH_SHORT).show()
-
-            // Membuat Intent untuk membuka TambahStokActivity
-            val intent = Intent(context, TambahStokActivity::class.java)
-
-            // Menyertakan data tambahan (opsional, jika diperlukan)
-            // intent.putExtra("key", "value")
-
-            // Memulai Activity
+        // Akses tombol langsung dari binding
+        binding.btnTambahStok.setOnClickListener {
+            val intent = Intent(requireContext(), TambahStokActivity::class.java)
             startActivity(intent)
         }
 
-        return rootView
+        return root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

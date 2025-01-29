@@ -35,6 +35,14 @@
                 android:layout_marginVertical="16dp"
                 android:textColor="#000" />
 
+            <Button
+                android:id="@+id/btnTambahHarga"
+                style="@style/RoundedButton"
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:layout_marginBottom="16dp"
+                android:text="Tambah Harga" />
+
             <!-- RecyclerView untuk Produk -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewDaftarHargaBan"

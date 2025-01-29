@@ -8,9 +8,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="primary">#125536</color>
-    <color name="secondary">#12a75c</color>
-    <color name="obsidian">#031602</color>
+    <color name="grey_100">#f2f2f2</color>
+    <color name="grey_200">#d4d4d4</color>
+    <color name="grey_300">#a5a5a5</color>
+    <color name="grey_400">#c7c7c7</color>
+    <color name="grey_500">#3c3c3c</color>
+    <color name="dark_grey">#2f2f2f</color>
     <color name="lava_black">#352f36</color>
 
     <color name="red">#ff5e5b</color>
