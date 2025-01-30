@@ -37,9 +37,9 @@ class LoginActivity : AppCompatActivity() {
         pagesRegister = findViewById(R.id.btn_halaman_register)
 
         val sharedPreferences: SharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
-        val userId = sharedPreferences.getString("id_user", null)
+        val userId = sharedPreferences.getInt("id_user", -1)
 
-        if (userId != null) {
+        if (userId != -1) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
@@ -82,18 +82,21 @@ class LoginActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     try {
                         val result = response.body()?.string()
+                        Log.d("LoginActivity", "Response: $result")  // Log the entire response
+
                         val jsonResponse = JSONObject(result)
 
-                        if (jsonResponse.has("status") && jsonResponse.getString("status") == "success") {
+                        // Check if the response has the "status" and proceed with parsing
+                        if (jsonResponse.getBoolean("status")) {
                             val userDetails = jsonResponse.getJSONObject("user_details")
-                            val userId = userDetails.getString("id_user")
-                            val userEmail = userDetails.getString("email")
-                            val userLevel = userDetails.getString("level")
+                            val userId = jsonResponse.getString("id_user").toInt()  // Convert "id_user" to Int
+                            val userEmail = jsonResponse.getString("email") // Access "email" directly from root
+                            val userLevel = jsonResponse.getString("level")
                             val userNama = userDetails.getString("nama")
 
                             val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
                             val editor = sharedPreferences.edit()
-                            editor.putString("id_user", userId)
+                            editor.putInt("id_user", userId)  // Now storing userId as an Int
                             editor.putString("email", userEmail)
                             editor.putString("level", userLevel)
                             editor.putString("nama", userNama)
@@ -104,7 +107,7 @@ class LoginActivity : AppCompatActivity() {
                             startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                             finish()
                         } else {
-                            Toast.makeText(this@LoginActivity, "Login Gagal: ${jsonResponse.getString("message")}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@LoginActivity, "Login Gagal: ${jsonResponse.getString("error")}", Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: JSONException) {
                         Log.e("LoginActivity", "JSON Error: ${e.message}")

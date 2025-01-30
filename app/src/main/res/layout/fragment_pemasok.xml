@@ -41,10 +41,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="42dp"
                 android:layout_marginBottom="16dp"
-                android:text="Tambah Stok Ban Bekas" />
+                android:text="Tambah Stok" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewDaftarPemasok"
+                android:id="@+id/recyclerViewDaftarStok"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:listitem="@layout/daftar_stok" />
