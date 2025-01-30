@@ -10,9 +10,8 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:radius="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
@@ -24,34 +23,30 @@
             android:padding="16dp">
 
             <ImageButton
-                android:id="@+id/btn_kembali"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:id="@+id/btnKembali"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:adjustViewBounds="true"
+                android:scaleType="centerInside"
                 android:background="?android:attr/selectableItemBackground"
-                android:scaleType="fitXY"
-                android:src="@drawable/ic_arrow_left"
-                tools:ignore="TouchTargetSizeCheck" />
+                android:src="@drawable/ic_back" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/title_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="Tambah Harga Ban Bekas"
-                android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textColor="@color/dark_grey"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/imageView546"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:adjustViewBounds="true"
-                android:scaleType="fitXY" />
+                android:layout_width="28dp"
+                android:layout_height="28dp" />
         </LinearLayout>
-
     </androidx.cardview.widget.CardView>
 
     <LinearLayout

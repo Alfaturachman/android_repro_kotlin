@@ -1,16 +1,16 @@
 package com.example.repro.ui.pengelola
 
 import android.content.Context
+import android.content.Intent
 import android.widget.Toast
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
-import com.example.repro.ui.pengelola.riwayat_detail.RiwayatDetailFragment
+import com.example.repro.ui.pengelola.riwayat_detail.RiwayatDetailActivity
 
 class PemasokAdapter(
     private val context: Context,
@@ -51,18 +51,10 @@ class PemasokAdapter(
 
         private fun handleAmbilClick(pemasok: Pemasok) {
             val context = itemView.context
-
-            if (context is AppCompatActivity) {
-                val activity = context
-                val fragment = RiwayatDetailFragment.newInstance(pemasok.id)
-
-                activity.supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment) // Ganti dengan ID container fragment Anda
-                    .addToBackStack(null) // Opsional untuk menambah fragment ke back stack
-                    .commit()
-            } else {
-                Toast.makeText(context, "Activity is not an instance of AppCompatActivity", Toast.LENGTH_SHORT).show()
+            val intent = Intent(context, RiwayatDetailActivity::class.java).apply {
+                putExtra("PEMASOK_ID", pemasok.id) // Mengirim ID pemasok
             }
+            context.startActivity(intent)
         }
     }
 }
