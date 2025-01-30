@@ -5,26 +5,21 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.repro.MainActivity
 import com.example.repro.R
-import com.example.repro.api.ApiService
 import com.example.repro.api.RetrofitClient
-import org.json.JSONException
-import org.json.JSONObject
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
+import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var usernameEditText: EditText
@@ -41,22 +36,18 @@ class LoginActivity : AppCompatActivity() {
         loginButton = findViewById(R.id.btn_login)
         pagesRegister = findViewById(R.id.btn_halaman_register)
 
-        // Check SharedPreferences
         val sharedPreferences: SharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
         val userId = sharedPreferences.getString("id_user", null)
 
         if (userId != null) {
-            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
 
-        // Handle login button click
         loginButton.setOnClickListener {
             val username = usernameEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
 
-            // Validate inputs
             if (TextUtils.isEmpty(username)) {
                 usernameEditText.error = "Username is required"
                 return@setOnClickListener
@@ -70,59 +61,36 @@ class LoginActivity : AppCompatActivity() {
             loginUser(username, password)
         }
 
-        // Handle register button click
         pagesRegister.setOnClickListener {
-            val intent = Intent(this@LoginActivity, RegisterActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, RegisterActivity::class.java))
         }
     }
 
     private fun loginUser(email: String, password: String) {
-        val apiInterface = RetrofitClient.retrofitInstance.create(ApiService::class.java)
+        val apiService = RetrofitClient.instance
 
-        // Buat object JSON
-        val requestData = mapOf(
-            "email" to email,
-            "password" to password
-        )
+        val requestData = JSONObject()
+        requestData.put("email", email)
+        requestData.put("password", password)
 
-        // Buat RequestBody dari Map
-        val body = RequestBody.create(
-            "application/json; charset=utf-8".toMediaType(),
-            JSONObject(requestData).toString()
-        )
+        val body = RequestBody.create("application/json".toMediaTypeOrNull(), requestData.toString())
 
-        // Send login request to the server
-        val call = apiInterface.loginUser(body)
+        val call = apiService.loginUser(body)
 
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {
                     try {
-                        // Read response body as string
                         val result = response.body()?.string()
+                        val jsonResponse = JSONObject(result)
 
-                        if (result != null && result.contains("Login successful")) {
-                            // Login successful
-                            Log.d("LoginActivity", "Login successful: $result")
-                            Toast.makeText(this@LoginActivity, "Login berhasil", Toast.LENGTH_SHORT).show()
-
-                            // Parse response to get userId, email, level, and name from user_details
-                            val jsonResponse = JSONObject(result)
-                            val userEmail = jsonResponse.getString("email")
-                            val userId = jsonResponse.getString("id_user")
-                            val userLevel = jsonResponse.getString("level")
-
-                            // Ambil data dari objek user_details
+                        if (jsonResponse.has("status") && jsonResponse.getString("status") == "success") {
                             val userDetails = jsonResponse.getJSONObject("user_details")
+                            val userId = userDetails.getString("id_user")
+                            val userEmail = userDetails.getString("email")
+                            val userLevel = userDetails.getString("level")
                             val userNama = userDetails.getString("nama")
 
-                            Log.d("SharedPreferences", "User ID: $userId")
-                            Log.d("SharedPreferences", "User Email: $userEmail")
-                            Log.d("SharedPreferences", "User Level: $userLevel")
-                            Log.d("SharedPreferences", "User Nama: $userNama")
-
-                            // Save user data in SharedPreferences
                             val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
                             val editor = sharedPreferences.edit()
                             editor.putString("id_user", userId)
@@ -131,32 +99,25 @@ class LoginActivity : AppCompatActivity() {
                             editor.putString("nama", userNama)
                             editor.apply()
 
-                            // Redirect to MainActivity
-                            val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                            startActivity(intent)
+                            Toast.makeText(this@LoginActivity, "Login Berhasil", Toast.LENGTH_SHORT).show()
+
+                            startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                             finish()
                         } else {
-                            // Login failed
-                            Log.e("LoginActivity", "Login failed: Invalid email or password. Response: $result")
-                            Toast.makeText(this@LoginActivity, "Invalid username or password", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@LoginActivity, "Login Gagal: ${jsonResponse.getString("message")}", Toast.LENGTH_SHORT).show()
                         }
                     } catch (e: JSONException) {
-                        Log.e("LoginActivity", "Error parsing response: " + e.message, e)
-                        Toast.makeText(this@LoginActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-                    } catch (e: IOException) {
-                        Log.e("LoginActivity", "Error reading response body: " + e.message, e)
-                        Toast.makeText(this@LoginActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        Log.e("LoginActivity", "JSON Error: ${e.message}")
+                        Toast.makeText(this@LoginActivity, "Error Parsing Response", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    // Server response error
-                    Log.e("LoginActivity", "Login failed: Response code " + response.code() + ", message: " + response.message())
-                    Toast.makeText(this@LoginActivity, "Login failed", Toast.LENGTH_SHORT).show()
+                    Log.e("LoginActivity", "Response Error: ${response.code()} - ${response.message()}")
+                    Toast.makeText(this@LoginActivity, "Login Gagal", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                // Connection or server error
-                Log.e("LoginActivity", "Login error: " + t.message, t)
+                Log.e("LoginActivity", "Request Error: ${t.message}")
                 Toast.makeText(this@LoginActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })

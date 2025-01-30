@@ -78,7 +78,7 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun registerUser(namaPemilik: String, namaUsaha: String, noHp: String, alamat: String, email: String, password: String) {
-        val apiInterface = RetrofitClient.retrofitInstance.create(ApiService::class.java)
+        val apiService = RetrofitClient.instance
 
         Log.d(TAG, "Data sebelum dikirim: namaPemilik=$namaPemilik, namaUsaha=$namaUsaha, noHp=$noHp, alamat=$alamat, email=$email, password=$password")
 
@@ -99,7 +99,7 @@ class RegisterActivity : AppCompatActivity() {
         )
 
         // Kirim ke server
-        val call = apiInterface.registerUser(body)
+        val call = apiService.registerUser(body)
 
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

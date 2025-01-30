@@ -56,7 +56,7 @@ class PengelolaFragment : Fragment() {
 
     private fun fetchPemasokData() {
         // Using Retrofit instance from RetrofitClient
-        val apiService = RetrofitClient.retrofitInstance.create(ApiService::class.java)
+        val apiService = RetrofitClient.instance
 
         val call = apiService.getPemasokList()
         call.enqueue(object : Callback<ApiResponse<List<Pemasok>>> {

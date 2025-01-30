@@ -91,7 +91,6 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-                    <!-- Nama Pemilik -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -100,6 +99,7 @@
                         android:textSize="14sp" />
 
                     <TextView
+                        android:id="@+id/etNamaPemilik"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Alfaturachman"
@@ -107,7 +107,6 @@
                         android:textStyle="bold"
                         android:textSize="14sp" />
 
-                    <!-- Nama Usaha -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -117,6 +116,7 @@
                         android:textSize="14sp" />
 
                     <TextView
+                        android:id="@+id/etNamaUsaha"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Bengkel Jaya Abadi"
@@ -124,36 +124,36 @@
                         android:textStyle="bold"
                         android:textSize="14sp" />
 
-                    <!-- Diambil Dari -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Diambil dari"
+                        android:text="Nomor HP Pemasok"
                         android:textColor="@color/black"
                         android:textSize="14sp" />
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Bengkel Jaya Abadi"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        android:textSize="14sp" />
-
-                    <!-- Nomor HP -->
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="Nomor HP"
-                        android:textColor="@color/black"
-                        android:textSize="14sp" />
-
-                    <TextView
+                        android:id="@+id/etNomorHp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="08123456789"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Alamat"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/etAlamat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Jl Majapahit"
                         android:textColor="@color/black"
                         android:textStyle="bold"
                         android:textSize="14sp" />
