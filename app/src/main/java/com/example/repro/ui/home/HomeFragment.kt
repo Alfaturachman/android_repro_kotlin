@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.repro.api.RetrofitClient
@@ -28,6 +30,10 @@ class HomeFragment : Fragment() {
     private lateinit var pemasokTotalBelumAmbil: TextView
     private lateinit var pemasokTotalSudahAmbil: TextView
     private lateinit var laporanDataPemasok: BarChart
+    private lateinit var CardViewPemasokTotalBelumDiambil: CardView
+    private lateinit var CardViewPemasokTotalSudahDiambil: CardView
+    private lateinit var CardViewPengelolaTotalBanBekas: CardView
+    private lateinit var CardViewPengelolaTotalSudahDiolah: CardView
     private var binding: FragmentHomeBinding? = null
 
     override fun onCreateView(
@@ -41,6 +47,12 @@ class HomeFragment : Fragment() {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root = binding?.root
 
+        // CardView Binding
+        CardViewPemasokTotalBelumDiambil = binding?.CardViewPemasokTotalBelumDiambil!!
+        CardViewPemasokTotalSudahDiambil = binding?.CardViewPemasokTotalSudahDiambil!!
+        CardViewPengelolaTotalBanBekas = binding?.CardViewPengelolaTotalBanBekas!!
+        CardViewPengelolaTotalSudahDiolah = binding?.CardViewPengelolaTotalSudahDiolah!!
+
         // TextView binding
         pemasokTotalBelumAmbil = binding?.pemasokTotalBelumAmbil!!
         pemasokTotalSudahAmbil = binding?.pemasokTotalSudahAmbil!!
@@ -48,12 +60,28 @@ class HomeFragment : Fragment() {
         // Mengambil BarChart dari binding
         laporanDataPemasok = binding?.laporanDataPemasok!!
 
-        // SharedPreferences
+        // ID User SharedPreferences
         val pemasokId = getPemasokIdFromSharedPreferences()
-        if (pemasokId != -1) {
-            pemasokDataTotal(pemasokId)
-        } else {
-            // Handle jika id_pemasok tidak ditemukan
+        pemasokDataTotal(pemasokId)
+
+        // CardView berdasarkan level SharedPreferences
+        val level = getLevelFromSharedPreferences()
+        when (level) {
+            "pemasok" -> {
+                CardViewPemasokTotalBelumDiambil.visibility = View.VISIBLE
+                CardViewPemasokTotalSudahDiambil.visibility = View.VISIBLE
+                CardViewPengelolaTotalBanBekas.visibility = View.GONE
+                CardViewPengelolaTotalSudahDiolah.visibility = View.GONE
+            }
+            "pengelola" -> {
+                CardViewPemasokTotalBelumDiambil.visibility = View.GONE
+                CardViewPemasokTotalSudahDiambil.visibility = View.GONE
+                CardViewPengelolaTotalBanBekas.visibility = View.VISIBLE
+                CardViewPengelolaTotalSudahDiolah.visibility = View.VISIBLE
+            }
+            else -> {
+                Toast.makeText(requireContext(), "Level pengguna tidak valid", Toast.LENGTH_SHORT).show()
+            }
         }
 
         // Kembalikan root view
@@ -63,6 +91,11 @@ class HomeFragment : Fragment() {
     private fun getPemasokIdFromSharedPreferences(): Int {
         val sharedPreferences = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         return sharedPreferences.getInt("id_user", -1)
+    }
+
+    private fun getLevelFromSharedPreferences(): String? {
+        val sharedPreferences = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("level", "0")
     }
 
     private fun pemasokDataTotal(userId: Int) {
