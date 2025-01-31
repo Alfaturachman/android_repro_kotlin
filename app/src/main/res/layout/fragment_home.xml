@@ -224,7 +224,7 @@
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="16dp">
 
-                        <com.github.mikephil.charting.charts.LineChart
+                        <com.github.mikephil.charting.charts.BarChart
                             android:id="@+id/laporanDataPemasok"
                             android:layout_width="match_parent"
                             android:layout_height="300dp" />

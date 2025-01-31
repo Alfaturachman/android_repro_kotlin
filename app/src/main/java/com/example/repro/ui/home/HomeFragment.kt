@@ -11,22 +11,23 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.repro.api.RetrofitClient
 import com.example.repro.api.ApiResponse
-import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.example.repro.databinding.FragmentHomeBinding
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.HashMap
 
-
 class HomeFragment : Fragment() {
     private lateinit var pemasokTotalBelumAmbil: TextView
     private lateinit var pemasokTotalSudahAmbil: TextView
-    private lateinit var laporanDataPemasok: LineChart
+    private lateinit var laporanDataPemasok: BarChart
     private var binding: FragmentHomeBinding? = null
 
     override fun onCreateView(
@@ -44,7 +45,7 @@ class HomeFragment : Fragment() {
         pemasokTotalBelumAmbil = binding?.pemasokTotalBelumAmbil!!
         pemasokTotalSudahAmbil = binding?.pemasokTotalSudahAmbil!!
 
-        // Mengambil LineChart dari binding
+        // Mengambil BarChart dari binding
         laporanDataPemasok = binding?.laporanDataPemasok!!
 
         // SharedPreferences
@@ -87,20 +88,49 @@ class HomeFragment : Fragment() {
                     pemasokTotalBelumAmbil.text = "${stokData.belumDiambil}"
                     pemasokTotalSudahAmbil.text = "${stokData.sudahDiambil}"
 
-                    // Siapkan data untuk LineChart
-                    val entries = ArrayList<Entry>()
-                    entries.add(Entry(1f, stokData.belumDiambil))
-                    entries.add(Entry(2f, stokData.sudahDiambil))
+                    // Siapkan data untuk BarChart
+                    val entries = ArrayList<BarEntry>()
 
-                    // Set data set untuk LineChart
-                    val dataSet = LineDataSet(entries, "Stok Data")
+                    // Buat array untuk 12 bulan
+                    val stokPerBulan = FloatArray(12) { 0f } // Inisialisasi dengan nilai 0
+
+                    // Isi array dengan data dari API
+                    for (stok in stokData.stokPerBulan) {
+                        val bulanIndex = stok.bulan - 1 // Konversi bulan (1-12) ke index (0-11)
+                        if (bulanIndex in 0..11) {
+                            stokPerBulan[bulanIndex] = stok.totalStok
+                        }
+                    }
+
+                    // Tambahkan data ke entries
+                    for (i in 0 until 12) {
+                        entries.add(BarEntry(i.toFloat() + 1, stokPerBulan[i])) // Bulan dimulai dari 1
+                    }
+
+                    // Set data set untuk BarChart
+                    val dataSet = BarDataSet(entries, "Stok per Bulan") // Label untuk dataset
                     dataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()
 
-                    // Buat LineData
-                    val lineData = LineData(dataSet)
+                    // Buat BarData
+                    val barData = BarData(dataSet)
 
                     // Set data ke chart
-                    laporanDataPemasok.data = lineData
+                    laporanDataPemasok.data = barData
+
+                    // Atur sumbu X (bulan)
+                    val bulanLabels = arrayOf(
+                        "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
+                        "Jul", "Agu", "Sep", "Okt", "Nov", "Des"
+                    )
+                    val xAxis = laporanDataPemasok.xAxis
+                    xAxis.valueFormatter = IndexAxisValueFormatter(bulanLabels)
+                    xAxis.position = XAxis.XAxisPosition.BOTTOM
+                    xAxis.granularity = 1f
+                    xAxis.setDrawGridLines(false)
+
+                    // Atur legenda
+                    laporanDataPemasok.legend.isEnabled = true // Aktifkan legenda
+                    laporanDataPemasok.legend.textColor = android.graphics.Color.BLACK // Warna teks legenda
 
                     // Menampilkan chart
                     laporanDataPemasok.invalidate()

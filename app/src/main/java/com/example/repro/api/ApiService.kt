@@ -4,7 +4,6 @@ import com.example.repro.ui.pengelola.Ambil
 import com.example.repro.ui.pengelola.Pemasok
 import com.example.repro.ui.pengelola.PemasokResponse
 import com.example.repro.ui.pemasok.StatusStok
-import com.example.repro.api.ApiResponse
 import com.example.repro.ui.home.Stok
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -13,7 +12,6 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
-
 
 interface ApiService {
     @POST("login.php")
