@@ -3,6 +3,7 @@ package com.example.repro.ui.pengelola.riwayat_detail
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -24,6 +25,9 @@ class RiwayatDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_riwayat_detail)
+
+        window.statusBarColor = resources.getColor(R.color.white, theme)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
 
         // Inisialisasi TextView
         etNamaPemilik = findViewById(R.id.etNamaPemilik)
