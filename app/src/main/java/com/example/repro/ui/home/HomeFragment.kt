@@ -51,7 +51,7 @@ class HomeFragment : Fragment() {
         // SharedPreferences
         val pemasokId = getPemasokIdFromSharedPreferences()
         if (pemasokId != -1) {
-            fetchStokData(pemasokId)
+            pemasokDataTotal(pemasokId)
         } else {
             // Handle jika id_pemasok tidak ditemukan
         }
@@ -65,7 +65,7 @@ class HomeFragment : Fragment() {
         return sharedPreferences.getInt("id_user", -1)
     }
 
-    private fun fetchStokData(userId: Int) {
+    private fun pemasokDataTotal(userId: Int) {
         // Buat request body
         val requestBody = HashMap<String, Int>()
         requestBody["user_id"] = userId
