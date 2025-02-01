@@ -4,7 +4,8 @@ import com.example.repro.ui.pengelola.Ambil
 import com.example.repro.ui.pengelola.Pemasok
 import com.example.repro.ui.pengelola.PemasokResponse
 import com.example.repro.ui.pemasok.StatusStok
-import com.example.repro.ui.home.Stok
+import com.example.repro.ui.home.TotalStokPemasok
+import com.google.android.gms.common.api.Response
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -33,7 +34,7 @@ interface ApiService {
 
     @Headers("Content-Type: application/json")
     @POST("get_total_pemasok.php")
-    fun getStokData(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<Stok>>
+    fun getStokData(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<TotalStokPemasok>>
 
     @GET("get_ambil.php")
     fun getAmbil(): Call<List<Ambil>>

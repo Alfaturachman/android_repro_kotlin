@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
@@ -34,6 +35,7 @@ class HomeFragment : Fragment() {
     private lateinit var CardViewPemasokTotalSudahDiambil: CardView
     private lateinit var CardViewPengelolaTotalBanBekas: CardView
     private lateinit var CardViewPengelolaTotalSudahDiolah: CardView
+    private lateinit var webView: WebView
     private var binding: FragmentHomeBinding? = null
 
     override fun onCreateView(
@@ -48,6 +50,7 @@ class HomeFragment : Fragment() {
         val root = binding?.root
 
         // CardView Binding
+        webView = binding?.webViewChart!!
         CardViewPemasokTotalBelumDiambil = binding?.CardViewPemasokTotalBelumDiambil!!
         CardViewPemasokTotalSudahDiambil = binding?.CardViewPemasokTotalSudahDiambil!!
         CardViewPengelolaTotalBanBekas = binding?.CardViewPengelolaTotalBanBekas!!
@@ -84,6 +87,9 @@ class HomeFragment : Fragment() {
             }
         }
 
+        webView.settings.javaScriptEnabled = true
+        webView.loadUrl("http://192.168.1.21:80/repro_api/chart_pemasok.html")
+
         // Kembalikan root view
         return root
     }
@@ -105,8 +111,8 @@ class HomeFragment : Fragment() {
 
         // Panggil API
         val call = RetrofitClient.instance.getStokData(requestBody)
-        call.enqueue(object : Callback<ApiResponse<Stok>> {
-            override fun onResponse(call: Call<ApiResponse<Stok>>, response: Response<ApiResponse<Stok>>) {
+        call.enqueue(object : Callback<ApiResponse<TotalStokPemasok>> {
+            override fun onResponse(call: Call<ApiResponse<TotalStokPemasok>>, response: Response<ApiResponse<TotalStokPemasok>>) {
                 if (response.isSuccessful && response.body() != null) {
                     val apiResponse = response.body()!!
 
@@ -128,7 +134,7 @@ class HomeFragment : Fragment() {
                     val stokPerBulan = FloatArray(12) { 0f } // Inisialisasi dengan nilai 0
 
                     // Isi array dengan data dari API
-                    for (stok in stokData.stokPerBulan) {
+                    for (stok in stokData.pemasokStokPerBulan) {
                         val bulanIndex = stok.bulan - 1 // Konversi bulan (1-12) ke index (0-11)
                         if (bulanIndex in 0..11) {
                             stokPerBulan[bulanIndex] = stok.totalStok
@@ -173,7 +179,7 @@ class HomeFragment : Fragment() {
                 }
             }
 
-            override fun onFailure(call: Call<ApiResponse<Stok>>, t: Throwable) {
+            override fun onFailure(call: Call<ApiResponse<TotalStokPemasok>>, t: Throwable) {
                 // Log jika terjadi kegagalan jaringan atau error lainnya
                 Log.e("API_FAILURE", "Request gagal: ${t.message}", t)
             }
