@@ -5,7 +5,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "http://192.168.1.21:80/repro_api/"
+    private val ip: String = "192.168.1.21"
+
+    // Buat BASE_URL dengan menggabungkan string
+    private val BASE_URL = "http://$ip:80/repro_api/"
 
     private val client = OkHttpClient.Builder().build()
 

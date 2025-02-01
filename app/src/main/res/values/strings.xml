@@ -20,8 +20,5 @@
     <string-array name="jenis_kendaraan_array">
         <item>Mobil</item>
         <item>Motor</item>
-        <item>Truk</item>
-        <item>Bus</item>
-        <item>Sepeda</item>
     </string-array>
 </resources>
