@@ -7,11 +7,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.repro.R
 import com.example.repro.databinding.FragmentHargaBanBinding
 import com.example.repro.ui.harga_ban.tambah.TambahHargaActivity
 import com.example.repro.ui.pemasok.PemasokViewModel
-import com.example.repro.ui.pemasok.TambahStokActivity
 
 class HargaBanFragment : Fragment() {
 

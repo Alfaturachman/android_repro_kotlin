@@ -11,6 +11,4 @@ data class ApiResponse<T>(
 
     @SerializedName("data")
     val data: T
-) {
-    fun isStatus(): Boolean = status
-}
+)

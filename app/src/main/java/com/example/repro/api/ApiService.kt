@@ -1,5 +1,6 @@
 package com.example.repro.api
 
+import com.example.repro.ui.harga_ban.tambah.HargaBan
 import com.example.repro.ui.pengelola.Ambil
 import com.example.repro.ui.pengelola.Pemasok
 import com.example.repro.ui.pengelola.PemasokResponse
@@ -34,6 +35,10 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     @POST("get_total_pemasok.php")
     fun getStokData(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<TotalStokPemasok>>
+
+    @Headers("Content-Type: application/json")
+    @POST("post_harga_ban.php")
+    fun tambahHargaBan(@Body hargaBan: HargaBan): Call<ApiResponse<HargaBan>>
 
     @GET("get_ambil.php")
     fun getAmbil(): Call<List<Ambil>>

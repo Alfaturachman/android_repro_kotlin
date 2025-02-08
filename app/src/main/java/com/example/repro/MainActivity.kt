@@ -28,6 +28,12 @@ class MainActivity : AppCompatActivity() {
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
 
+        mainBinding.navView.setCheckedItem(R.id.nav_home)
+        mainBinding.navView.setNavigationItemSelectedListener { menuItem ->
+            menuItem.isChecked = true
+            true
+        }
+
         // Set toolbar
         setSupportActionBar(mainBinding.appBarMain.toolbar)
 

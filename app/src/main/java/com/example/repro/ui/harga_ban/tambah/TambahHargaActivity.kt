@@ -1,33 +1,79 @@
 package com.example.repro.ui.harga_ban.tambah
 
-import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.Button
 import android.widget.ImageButton
-import androidx.activity.enableEdgeToEdge
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.repro.R
+import com.example.repro.api.ApiResponse
+import com.example.repro.api.RetrofitClient
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
 class TambahHargaActivity : AppCompatActivity() {
-    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_tambah_harga)
 
-        window.statusBarColor = resources.getColor(R.color.white, theme)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        // Inisialisasi View
+        val tvTanggal: TextView = findViewById(R.id.etTanggal)
+        val rgJenisKendaraan: RadioGroup = findViewById(R.id.rgJenisKendaraan)
+        val btnSimpan: Button = findViewById(R.id.btnSimpanStok)
 
         // Button Kembali
         val btnKembali: ImageButton = findViewById(R.id.btnKembali)
         btnKembali.setOnClickListener {
-            finish() // Menutup activity dan kembali ke fragment sebelumnya
+            finish()
+        }
+
+        // Set Tanggal dan Waktu Otomatis (Update Secara Realtime)
+        val timer = Timer()
+        timer.scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                runOnUiThread {
+                    val tanggalFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                    val tanggalSekarang = tanggalFormat.format(Date())
+                    tvTanggal.text = tanggalSekarang
+                }
+            }
+        }, 0, 1000) // Update setiap detik
+
+        // Tombol Simpan
+        btnSimpan.setOnClickListener {
+            val tanggal = tvTanggal.text.toString()
+            val selectedId = rgJenisKendaraan.checkedRadioButtonId
+            val jenis = findViewById<RadioButton>(selectedId)?.text.toString()
+            val harga = findViewById<TextView>(R.id.etHargaPerKg).text.toString()
+
+            if (tanggal.isEmpty() || jenis.isEmpty() || harga.isEmpty()) {
+                Toast.makeText(this, "Semua field harus diisi!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            // Kirim data ke API
+            val hargaBan = HargaBan(tanggal, jenis, harga)
+            RetrofitClient.instance.tambahHargaBan(hargaBan)
+                .enqueue(object : Callback<ApiResponse<HargaBan>> {
+                    override fun onResponse(call: Call<ApiResponse<HargaBan>>, response: Response<ApiResponse<HargaBan>>) {
+                        if (response.isSuccessful && response.body()?.status == true) {
+                            Toast.makeText(this@TambahHargaActivity, "Harga berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
+                            finish()
+                        } else {
+                            Toast.makeText(this@TambahHargaActivity, "Gagal menyimpan data!", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ApiResponse<HargaBan>>, t: Throwable) {
+                        Toast.makeText(this@TambahHargaActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                    }
+                })
         }
     }
 }
