@@ -58,10 +58,10 @@ class TambahHargaActivity : AppCompatActivity() {
             }
 
             // Kirim data ke API
-            val hargaBan = HargaBan(tanggal, jenis, harga)
-            RetrofitClient.instance.tambahHargaBan(hargaBan)
-                .enqueue(object : Callback<ApiResponse<HargaBan>> {
-                    override fun onResponse(call: Call<ApiResponse<HargaBan>>, response: Response<ApiResponse<HargaBan>>) {
+            val getHargaBan = getHargaBan(tanggal, jenis, harga)
+            RetrofitClient.instance.tambahHargaBan(getHargaBan)
+                .enqueue(object : Callback<ApiResponse<getHargaBan>> {
+                    override fun onResponse(call: Call<ApiResponse<getHargaBan>>, response: Response<ApiResponse<getHargaBan>>) {
                         if (response.isSuccessful && response.body()?.status == true) {
                             Toast.makeText(this@TambahHargaActivity, "Harga berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
                             finish()
@@ -70,7 +70,7 @@ class TambahHargaActivity : AppCompatActivity() {
                         }
                     }
 
-                    override fun onFailure(call: Call<ApiResponse<HargaBan>>, t: Throwable) {
+                    override fun onFailure(call: Call<ApiResponse<getHargaBan>>, t: Throwable) {
                         Toast.makeText(this@TambahHargaActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                     }
                 })
