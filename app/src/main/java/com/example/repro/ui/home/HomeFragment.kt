@@ -1,6 +1,7 @@
 package com.example.repro.ui.home
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,11 +10,15 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.repro.R
 import com.example.repro.api.RetrofitClient
 import com.example.repro.api.ApiResponse
+import com.example.repro.api.ApiService
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
@@ -25,6 +30,8 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.HashMap
 
 class HomeFragment : Fragment() {
@@ -87,8 +94,31 @@ class HomeFragment : Fragment() {
             }
         }
 
-        webView.settings.javaScriptEnabled = true
-        webView.loadUrl("http://192.168.1.21:80/repro_api/chart_pemasok.html")
+        val requestBody = HashMap<String, Int>(pemasokId)
+
+        val call = RetrofitClient.instance.getStokData(requestBody)
+        call.enqueue(object : Callback<ApiResponse<TotalStokPemasok>> {
+            override fun onResponse(call: Call<ApiResponse<TotalStokPemasok>>, response: Response<ApiResponse<TotalStokPemasok>>) {
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    if (apiResponse?.status == true) {
+                        webView.settings.javaScriptEnabled = true
+                        webView.loadUrl("http://192.168.1.21:80/repro_api/chart_pemasok.php")
+                    } else {
+                        // Handle error
+                        Log.e("API Error", apiResponse?.message ?: "Unknown error")
+                    }
+                } else {
+                    // Handle error
+                    Log.e("API Error", "Response not successful")
+                }
+            }
+
+            override fun onFailure(call: Call<ApiResponse<TotalStokPemasok>>, t: Throwable) {
+                // Handle failure
+                Log.e("API Failure", t.message ?: "Unknown error")
+            }
+        })
 
         // Kembalikan root view
         return root
