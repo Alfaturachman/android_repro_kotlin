@@ -16,7 +16,8 @@ class AmbilStokAdapter(
 ) : RecyclerView.Adapter<AmbilStokAdapter.AmbilStokViewHolder>() {
 
     class AmbilStokViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvNamaPemasok: TextView = itemView.findViewById(R.id.tvNamaPemasok)
+        val tvNamaUsaha: TextView = itemView.findViewById(R.id.tvNamaUsaha)
+        val tvNamaPemilik: TextView = itemView.findViewById(R.id.tvNamaPemilik)
         val tvAlamat: TextView = itemView.findViewById(R.id.tvAlamat)
         val tvJenisBan: TextView = itemView.findViewById(R.id.tvJenisBan)
         val tvTotalBerat: TextView = itemView.findViewById(R.id.tvTotalBerat)
@@ -36,7 +37,8 @@ class AmbilStokAdapter(
         val formattedHarga = formatter.format(ambilStok.harga.toDouble())
         val formattedTotalHarga = formatter.format(ambilStok.total_harga.toDouble())
 
-        holder.tvNamaPemasok.text = "Bengkel ${ambilStok.id_pemasok}"
+        holder.tvNamaUsaha.text = "${ambilStok.nama_usaha}"
+        holder.tvNamaPemilik.text = "Pemilik ${ambilStok.nama_pemasok}"
         holder.tvJenisBan.text = ambilStok.jenis
         holder.tvTotalBerat.text = "${ambilStok.total_berat} kg"
         holder.tvTotalHarga.text = "Rp $formattedTotalHarga"
