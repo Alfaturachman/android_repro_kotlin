@@ -44,7 +44,7 @@ class AmbilStokActivity : AppCompatActivity() {
             override fun onResponse(call: Call<ApiResponse<List<AmbilStok>>>, response: Response<ApiResponse<List<AmbilStok>>>) {
                 if (response.isSuccessful && response.body()?.status == true) {
                     val ambilStokList = response.body()?.data ?: emptyList()
-                    adapter = AmbilStokAdapter(ambilStokList)
+                    adapter = AmbilStokAdapter(ambilStokList, this@AmbilStokActivity)
                     recyclerView.adapter = adapter
                 }
             }
