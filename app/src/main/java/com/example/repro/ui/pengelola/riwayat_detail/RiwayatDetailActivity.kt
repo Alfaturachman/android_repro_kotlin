@@ -56,7 +56,7 @@ class RiwayatDetailActivity : AppCompatActivity() {
     private fun fetchPemasokData(idPemasok: Int) {
         val requestBody = hashMapOf("id_pemasok" to idPemasok)
 
-        RetrofitClient.instance.getPemasokData(requestBody)
+        RetrofitClient.instance.getRiwayatByPemasokId(requestBody)
             .enqueue(object : Callback<ApiResponse<getRiwayatPemasok>> {
                 override fun onResponse(
                     call: Call<ApiResponse<getRiwayatPemasok>>,

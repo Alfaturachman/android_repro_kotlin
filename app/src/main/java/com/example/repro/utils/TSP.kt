@@ -1,7 +1,7 @@
 package com.example.repro.utils
 
 import kotlin.math.*
-import com.example.repro.modal.AmbilStok
+import com.example.repro.modal.getAmbilStok
 
 object TSP {
 
@@ -16,7 +16,7 @@ object TSP {
         return R * c
     }
 
-    fun calculateDistanceMatrix(locations: List<AmbilStok>): Array<DoubleArray> {
+    fun calculateDistanceMatrix(locations: List<getAmbilStok>): Array<DoubleArray> {
         val n = locations.size
         val distanceMatrix = Array(n) { DoubleArray(n) }
 

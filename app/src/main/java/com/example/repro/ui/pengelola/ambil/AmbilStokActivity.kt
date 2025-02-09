@@ -10,7 +10,7 @@ import com.example.repro.R
 import com.example.repro.utils.TSP
 import com.example.repro.api.ApiResponse
 import com.example.repro.api.RetrofitClient
-import com.example.repro.modal.AmbilStok
+import com.example.repro.modal.getAmbilStok
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,14 +43,14 @@ class AmbilStokActivity : AppCompatActivity() {
 
     // Fungsi untuk mengambil data pemasok dari API dan menghitung TSP
     private fun fetchAmbilStokData() {
-        RetrofitClient.instance.getAmbilStok().enqueue(object : Callback<ApiResponse<List<AmbilStok>>> {
-            override fun onResponse(call: Call<ApiResponse<List<AmbilStok>>>, response: Response<ApiResponse<List<AmbilStok>>>) {
+        RetrofitClient.instance.getAmbilStok().enqueue(object : Callback<ApiResponse<List<getAmbilStok>>> {
+            override fun onResponse(call: Call<ApiResponse<List<getAmbilStok>>>, response: Response<ApiResponse<List<getAmbilStok>>>) {
                 if (response.isSuccessful && response.body()?.status == true) {
                     val ambilStokList = response.body()?.data ?: emptyList()
 
                     // Tambahkan lokasi pengelola secara statis
                     val pengelolaLokasi = "-6.748135,111.056280"
-                    val pengelola = AmbilStok(
+                    val pengelola = getAmbilStok(
                         id = "0",
                         id_pemasok = "0",
                         nama_pemasok = "Pengelola",
@@ -91,7 +91,7 @@ class AmbilStokActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<ApiResponse<List<AmbilStok>>>, t: Throwable) {
+            override fun onFailure(call: Call<ApiResponse<List<getAmbilStok>>>, t: Throwable) {
                 // Handle failure
             }
         })

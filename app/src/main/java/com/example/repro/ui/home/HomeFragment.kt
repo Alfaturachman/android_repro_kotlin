@@ -107,7 +107,7 @@ class HomeFragment : Fragment() {
         requestBody["user_id"] = userId
 
         // Panggil API
-        val call = RetrofitClient.instance.getStokData(requestBody)
+        val call = RetrofitClient.instance.getTotalStokPemasok(requestBody)
         call.enqueue(object : Callback<ApiResponse<getTotalStokPemasok>> {
             override fun onResponse(call: Call<ApiResponse<getTotalStokPemasok>>, response: Response<ApiResponse<getTotalStokPemasok>>) {
                 if (response.isSuccessful && response.body() != null) {

@@ -8,11 +8,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
-import com.example.repro.modal.AmbilStok
+import com.example.repro.modal.getAmbilStok
 import java.util.Locale
 
 class AmbilStokAdapter(
-    private val ambilStokList: List<AmbilStok>,
+    private val getAmbilStokList: List<getAmbilStok>,
     private val context: Context
 ) : RecyclerView.Adapter<AmbilStokAdapter.AmbilStokViewHolder>() {
 
@@ -31,7 +31,7 @@ class AmbilStokAdapter(
     }
 
     override fun onBindViewHolder(holder: AmbilStokViewHolder, position: Int) {
-        val ambilStok = ambilStokList[position]
+        val ambilStok = getAmbilStokList[position]
 
         // Format harga dengan DecimalFormat
         val formatter = java.text.DecimalFormat("#,###")
@@ -61,7 +61,7 @@ class AmbilStokAdapter(
     }
 
     override fun getItemCount(): Int {
-        return ambilStokList.size
+        return getAmbilStokList.size
     }
 
     private fun getAddressFromCoordinates(latitude: Double, longitude: Double): String? {

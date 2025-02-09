@@ -1,6 +1,6 @@
 package com.example.repro.modal
 
-data class Pemasok(
+data class getPemasok(
     var id: Int = 0,
     var idUser: Int = 0,
     var nama: String = "",

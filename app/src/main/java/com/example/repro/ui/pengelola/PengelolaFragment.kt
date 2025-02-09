@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.api.RetrofitClient
 import com.example.repro.api.ApiResponse
 import com.example.repro.databinding.FragmentPengelolaBinding
-import com.example.repro.modal.Pemasok
+import com.example.repro.modal.getPemasok
 import com.example.repro.ui.pengelola.ambil.AmbilStokActivity
 import retrofit2.Call
 import retrofit2.Callback
@@ -61,10 +61,10 @@ class PengelolaFragment : Fragment() {
         val apiService = RetrofitClient.instance
 
         val call = apiService.getPemasokList()
-        call.enqueue(object : Callback<ApiResponse<List<Pemasok>>> {
+        call.enqueue(object : Callback<ApiResponse<List<getPemasok>>> {
             override fun onResponse(
-                call: Call<ApiResponse<List<Pemasok>>>,
-                response: Response<ApiResponse<List<Pemasok>>>
+                call: Call<ApiResponse<List<getPemasok>>>,
+                response: Response<ApiResponse<List<getPemasok>>>
             ) {
                 if (response.isSuccessful && response.body()?.status == true) {
                     // Data successfully fetched
@@ -76,7 +76,7 @@ class PengelolaFragment : Fragment() {
                 }
             }
 
-            override fun onFailure(call: Call<ApiResponse<List<Pemasok>>>, t: Throwable) {
+            override fun onFailure(call: Call<ApiResponse<List<getPemasok>>>, t: Throwable) {
                 // Handle failure in fetching data
                 Toast.makeText(context, "Gagal mengambil data: ${t.message}", Toast.LENGTH_SHORT).show()
             }

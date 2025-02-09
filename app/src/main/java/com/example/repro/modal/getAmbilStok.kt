@@ -1,6 +1,6 @@
 package com.example.repro.modal
 
-data class AmbilStok(
+data class getAmbilStok(
     val id: String,
     val id_pemasok: String,
     val nama_pemasok: String,
