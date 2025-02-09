@@ -1,5 +1,6 @@
 package com.example.repro.ui.pengelola
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -52,6 +53,11 @@ class PengelolaFragment : Fragment() {
         fetchPemasokData()
 
         return root
+    }
+
+    private fun getPemasokIdFromSharedPreferences(): Int {
+        val sharedPreferences = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        return sharedPreferences.getInt("id_user", -1)
     }
 
     private fun fetchPemasokData() {

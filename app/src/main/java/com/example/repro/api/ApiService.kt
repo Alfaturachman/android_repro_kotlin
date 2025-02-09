@@ -7,6 +7,7 @@ import com.example.repro.ui.pengelola.Pemasok
 import com.example.repro.ui.pengelola.PemasokResponse
 import com.example.repro.ui.pemasok.StatusStok
 import com.example.repro.ui.home.TotalStokPemasok
+import com.example.repro.ui.pengelola.ambil.AmbilStok
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -43,6 +44,9 @@ interface ApiService {
 
     @GET("get_harga_ban.php")
     fun getHargaBan(): Call<ApiResponse<List<postHargaBan>>>
+
+    @GET("get_status_stok_belum_diambil.php")
+    fun getAmbilStok(): Call<ApiResponse<List<AmbilStok>>>
 
     @GET("get_ambil.php")
     fun getAmbil(): Call<List<Ambil>>

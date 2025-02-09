@@ -7,6 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
 import com.example.repro.ui.harga_ban.tambah.postHargaBan
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 
 class HargaBanAdapter(private val hargaBanList: List<postHargaBan>) : RecyclerView.Adapter<HargaBanAdapter.HargaBanViewHolder>() {
 
@@ -23,8 +25,18 @@ class HargaBanAdapter(private val hargaBanList: List<postHargaBan>) : RecyclerVi
 
     override fun onBindViewHolder(holder: HargaBanViewHolder, position: Int) {
         val hargaBan = hargaBanList[position]
+
+        // Buat instance DecimalFormatSymbols dan atur pemisah ribuan menjadi titik
+        val symbols = DecimalFormatSymbols().apply {
+            groupingSeparator = '.' // Mengatur pemisah ribuan menjadi titik
+        }
+
+        // Buat DecimalFormat dengan simbol yang sudah diatur
+        val formatter = DecimalFormat("#,###", symbols)
+        val formattedHarga = formatter.format(hargaBan.harga)
+
         holder.tvJenisBan.text = hargaBan.jenis
-        holder.tvHarga.text = "Rp${hargaBan.harga}"
+        holder.tvHarga.text = "Rp $formattedHarga"
         holder.tvTanggal.text = hargaBan.ins_time
     }
 
