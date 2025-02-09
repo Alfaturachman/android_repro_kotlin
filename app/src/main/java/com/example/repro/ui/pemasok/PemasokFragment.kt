@@ -73,29 +73,39 @@ class PemasokFragment : Fragment() {
         call.enqueue(object : Callback<ApiResponse<List<StatusStok>>> {
             override fun onResponse(call: Call<ApiResponse<List<StatusStok>>>, response: Response<ApiResponse<List<StatusStok>>>) {
                 if (response.isSuccessful) {
-                    // Log the successful response for debugging
                     Log.d("ID Pemasok Fragment", "Response: ${response.body()}")
 
                     if (response.body()?.status == true) {
                         val stokList = response.body()?.data ?: emptyList()
-                        adapter = StokAdapter(stokList)
-                        recyclerView.adapter = adapter
+                        if (stokList.isNotEmpty()) {
+                            // Jika ada stok, sembunyikan cardViewPeringatan
+                            binding.cardViewPeringatan.visibility = View.GONE
+                            recyclerView.visibility = View.VISIBLE
+
+                            adapter = StokAdapter(stokList)
+                            recyclerView.adapter = adapter
+                        } else {
+                            // Jika tidak ada stok, tampilkan cardViewPeringatan
+                            binding.cardViewPeringatan.visibility = View.VISIBLE
+                            recyclerView.visibility = View.GONE
+                        }
                     } else {
-                        // Log the error message from the API response
                         Log.e("ID Pemasok Fragment", "Error: ${response.body()?.message}")
-                        Toast.makeText(context, "Gagal mengambil data", Toast.LENGTH_SHORT).show()
+                        binding.cardViewPeringatan.visibility = View.VISIBLE
+                        recyclerView.visibility = View.GONE
                     }
                 } else {
-                    // Log error response from server
                     Log.e("ID Pemasok Fragment", "Response Error: ${response.code()} - ${response.message()}")
-                    Toast.makeText(context, "Gagal mengambil data: ${response.message()}", Toast.LENGTH_SHORT).show()
+                    binding.cardViewPeringatan.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
                 }
             }
 
             override fun onFailure(call: Call<ApiResponse<List<StatusStok>>>, t: Throwable) {
-                // Log failure reason
                 Log.e("ID Pemasok Fragment", "Request Failed: ${t.message}")
                 Toast.makeText(context, "Gagal mengambil data: ${t.message}", Toast.LENGTH_SHORT).show()
+                binding.cardViewPeringatan.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
             }
         })
     }

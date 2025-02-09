@@ -57,7 +57,6 @@ class HomeFragment : Fragment() {
         val root = binding?.root
 
         // CardView Binding
-        webView = binding?.webViewChart!!
         CardViewPemasokTotalBelumDiambil = binding?.CardViewPemasokTotalBelumDiambil!!
         CardViewPemasokTotalSudahDiambil = binding?.CardViewPemasokTotalSudahDiambil!!
         CardViewPengelolaTotalBanBekas = binding?.CardViewPengelolaTotalBanBekas!!
@@ -93,32 +92,6 @@ class HomeFragment : Fragment() {
                 Toast.makeText(requireContext(), "Level pengguna tidak valid", Toast.LENGTH_SHORT).show()
             }
         }
-
-        val requestBody = HashMap<String, Int>(pemasokId)
-
-        val call = RetrofitClient.instance.getStokData(requestBody)
-        call.enqueue(object : Callback<ApiResponse<TotalStokPemasok>> {
-            override fun onResponse(call: Call<ApiResponse<TotalStokPemasok>>, response: Response<ApiResponse<TotalStokPemasok>>) {
-                if (response.isSuccessful) {
-                    val apiResponse = response.body()
-                    if (apiResponse?.status == true) {
-                        webView.settings.javaScriptEnabled = true
-                        webView.loadUrl("http://192.168.1.21:80/repro_api/chart_pemasok.php")
-                    } else {
-                        // Handle error
-                        Log.e("API Error", apiResponse?.message ?: "Unknown error")
-                    }
-                } else {
-                    // Handle error
-                    Log.e("API Error", "Response not successful")
-                }
-            }
-
-            override fun onFailure(call: Call<ApiResponse<TotalStokPemasok>>, t: Throwable) {
-                // Handle failure
-                Log.e("API Failure", t.message ?: "Unknown error")
-            }
-        })
 
         // Kembalikan root view
         return root

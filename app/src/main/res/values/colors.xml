@@ -11,7 +11,14 @@
     <color name="bg_grey">#f9f9f9</color>
     <color name="dark_grey">#333</color>
 
-    <color name="red">#ff5e5b</color>
+    <color name="blue_100">#e2edfc</color>
+    <color name="blue">#0f4c92</color>
+
+    <color name="yellow_100">#fcf2c9</color>
     <color name="yellow">#fbb41a</color>
+
+    <color name="red">#ff5e5b</color>
+    <color name="red_100">#ffe2e1</color>
+
     <color name="green">#2bc999</color>
 </resources>
