@@ -1,7 +1,7 @@
-package com.example.repro
+package com.example.repro.utils
 
 import kotlin.math.*
-import com.example.repro.ui.pengelola.ambil.AmbilStok
+import com.example.repro.modal.AmbilStok
 
 object TSP {
 

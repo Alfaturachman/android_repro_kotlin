@@ -2,14 +2,21 @@
 <resources>
     <style name="OutlineButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:background">@drawable/button_outline</item>
+        <item name="backgroundTint">@color/blue</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
-    <style name="FillButton" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:background">@drawable/button_fill</item>
+    <style name="FillButton" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:background">@drawable/button_full_rounded</item>
+        <item name="backgroundTint">@color/blue</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
     <style name="RoundedButton" parent="Widget.AppCompat.Button.Borderless.Colored">
         <item name="android:background">@drawable/button_rounded</item>
+        <item name="backgroundTint">@color/blue</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textAllCaps">false</item>
     </style>

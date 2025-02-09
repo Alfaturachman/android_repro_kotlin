@@ -1,4 +1,4 @@
-package com.example.repro.ui.pengelola
+package com.example.repro.modal
 
 data class Pemasok(
     var id: Int = 0,

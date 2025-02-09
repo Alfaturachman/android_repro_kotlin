@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
-import com.example.repro.ui.harga_ban.tambah.postHargaBan
+import com.example.repro.modal.postHargaBan
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 

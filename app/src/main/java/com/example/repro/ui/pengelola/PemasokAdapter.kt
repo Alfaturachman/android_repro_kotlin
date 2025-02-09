@@ -2,7 +2,6 @@ package com.example.repro.ui.pengelola
 
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
+import com.example.repro.modal.Pemasok
 import com.example.repro.ui.pengelola.riwayat_detail.RiwayatDetailActivity
 
 class PemasokAdapter(

@@ -1,13 +1,13 @@
 package com.example.repro.api
 
-import com.example.repro.ui.harga_ban.tambah.getHargaBan
-import com.example.repro.ui.harga_ban.tambah.postHargaBan
-import com.example.repro.ui.pengelola.Ambil
-import com.example.repro.ui.pengelola.Pemasok
-import com.example.repro.ui.pengelola.PemasokResponse
-import com.example.repro.ui.pemasok.StatusStok
-import com.example.repro.ui.home.TotalStokPemasok
-import com.example.repro.ui.pengelola.ambil.AmbilStok
+import com.example.repro.modal.getHargaBan
+import com.example.repro.modal.postHargaBan
+import com.example.repro.modal.Ambil
+import com.example.repro.modal.Pemasok
+import com.example.repro.modal.getStokByPemasokId
+import com.example.repro.modal.getTotalStokPemasok
+import com.example.repro.modal.AmbilStok
+import com.example.repro.modal.getRiwayatPemasok
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -28,15 +28,15 @@ interface ApiService {
 
     @Headers("Content-Type: application/json")
     @POST("get_riwayat_pemasok.php")
-    fun getPemasokData(@Body requestBody: HashMap<String, Int>): Call<PemasokResponse>
+    fun getPemasokData(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<getRiwayatPemasok>>
 
     @Headers("Content-Type: application/json")
     @POST("get_status_stok.php")
-    fun getStokByPemasokId(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<List<StatusStok>>>
+    fun getStokByPemasokId(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<List<getStokByPemasokId>>>
 
     @Headers("Content-Type: application/json")
     @POST("get_total_pemasok.php")
-    fun getStokData(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<TotalStokPemasok>>
+    fun getStokData(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<getTotalStokPemasok>>
 
     @Headers("Content-Type: application/json")
     @POST("post_harga_ban.php")

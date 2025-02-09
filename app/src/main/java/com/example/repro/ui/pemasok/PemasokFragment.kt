@@ -13,11 +13,9 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.api.ApiResponse
-import com.example.repro.api.ApiService
 import com.example.repro.api.RetrofitClient
 import com.example.repro.databinding.FragmentPemasokBinding
-import com.example.repro.ui.pemasok.StatusStok
-import com.example.repro.ui.pengelola.Pemasok
+import com.example.repro.modal.getStokByPemasokId
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -70,8 +68,8 @@ class PemasokFragment : Fragment() {
 
         val call = apiService.getStokByPemasokId(requestBody)
 
-        call.enqueue(object : Callback<ApiResponse<List<StatusStok>>> {
-            override fun onResponse(call: Call<ApiResponse<List<StatusStok>>>, response: Response<ApiResponse<List<StatusStok>>>) {
+        call.enqueue(object : Callback<ApiResponse<List<getStokByPemasokId>>> {
+            override fun onResponse(call: Call<ApiResponse<List<getStokByPemasokId>>>, response: Response<ApiResponse<List<getStokByPemasokId>>>) {
                 if (response.isSuccessful) {
                     Log.d("ID Pemasok Fragment", "Response: ${response.body()}")
 
@@ -101,7 +99,7 @@ class PemasokFragment : Fragment() {
                 }
             }
 
-            override fun onFailure(call: Call<ApiResponse<List<StatusStok>>>, t: Throwable) {
+            override fun onFailure(call: Call<ApiResponse<List<getStokByPemasokId>>>, t: Throwable) {
                 Log.e("ID Pemasok Fragment", "Request Failed: ${t.message}")
                 Toast.makeText(context, "Gagal mengambil data: ${t.message}", Toast.LENGTH_SHORT).show()
                 binding.cardViewPeringatan.visibility = View.VISIBLE

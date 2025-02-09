@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
+import com.example.repro.modal.getStokByPemasokId
 
-class StokAdapter(private val stokList: List<StatusStok>) : RecyclerView.Adapter<StokAdapter.StokViewHolder>() {
+class StokAdapter(private val stokList: List<getStokByPemasokId>) : RecyclerView.Adapter<StokAdapter.StokViewHolder>() {
 
     inner class StokViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvJenis: TextView = itemView.findViewById(R.id.tvJenis)

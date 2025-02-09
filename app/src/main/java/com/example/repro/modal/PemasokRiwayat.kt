@@ -1,12 +1,6 @@
-package com.example.repro.ui.pengelola
+package com.example.repro.modal
 
-data class PemasokResponse(
-    val status: Boolean,
-    val message: String,
-    val data: PemasokData?
-)
-
-data class PemasokData(
+data class getRiwayatPemasok(
     val pemasok: PemasokDetail?,
     val status_stok: List<StatusStok>?
 )

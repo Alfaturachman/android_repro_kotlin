@@ -1,4 +1,4 @@
-package com.example.repro.ui.pengelola.ambil
+package com.example.repro.modal
 
 data class AmbilStok(
     val id: String,

@@ -1,6 +1,6 @@
-package com.example.repro.ui.pemasok
+package com.example.repro.modal
 
-data class StatusStok(
+data class getStokByPemasokId(
     val id: Int,
     val id_pemasok: Int,
     val tanggal: String,

@@ -1,4 +1,4 @@
-package com.example.repro.ui.harga_ban.tambah
+package com.example.repro.modal
 
 data class getHargaBan(
     val tanggal: String,
