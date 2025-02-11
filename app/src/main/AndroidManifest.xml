@@ -18,6 +18,9 @@
         android:theme="@style/Theme.Repro"
         tools:targetApi="31">
         <activity
+            android:name=".ui.splash_screen.SplashScreenActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.auth.LoginActivity"
             android:exported="true"
             android:theme="@style/Theme.Repro.NoActionBar">
@@ -29,9 +32,9 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:usesCleartextTraffic="true"
             android:exported="true"
-            android:theme="@style/Theme.Repro.NoActionBar" />
+            android:theme="@style/Theme.Repro.NoActionBar"
+            android:usesCleartextTraffic="true" />
         <activity
             android:name=".ui.pengelola.ambil.AmbilStokActivity"
             android:exported="false" />
