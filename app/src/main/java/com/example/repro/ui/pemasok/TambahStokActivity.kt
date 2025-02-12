@@ -23,6 +23,13 @@ import java.util.Date
 import java.util.Locale
 import android.os.Handler
 import android.text.TextUtils
+import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doAfterTextChanged
+import com.example.repro.api.RetrofitClient
+import com.example.repro.model.HargaResponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class TambahStokActivity : AppCompatActivity() {
 
@@ -31,6 +38,7 @@ class TambahStokActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var latitude: Double? = null
     private var longitude: Double? = null
+    private var hargaKendaraanMap = mutableMapOf<String, String>() // Map untuk menyimpan harga kendaraan
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +47,6 @@ class TambahStokActivity : AppCompatActivity() {
 
         window.statusBarColor = resources.getColor(R.color.white, theme)
 
-        // Ambil referensi view
         val etTanggal = findViewById<EditText>(R.id.etTanggal)
         val radioGroup = findViewById<RadioGroup>(R.id.radioGroupJenisKendaraan)
         val etJumlahStok = findViewById<EditText>(R.id.etJumlahStok)
@@ -62,41 +69,74 @@ class TambahStokActivity : AppCompatActivity() {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
         }
 
-        // Inisialisasi Location Provider
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        // Cek dan dapatkan lokasi
         if (isGPSEnabled()) {
             getLastLocation()
         } else {
             showGPSDialog()
         }
 
-        // Button Kembali
         val btnKembali: ImageButton = findViewById(R.id.btnKembali)
         btnKembali.setOnClickListener {
             finish()
         }
 
-        // Button Simpan
+        // Panggil API untuk mendapatkan harga kendaraan
+        fetchHargaKendaraan()
+
+        // Saat jenis kendaraan berubah, hanya update harga per kg, jangan langsung hitung total
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            val jenisKendaraan = when (checkedId) {
+                R.id.radioMobil -> "Mobil"
+                R.id.radioMotor -> "Motor"
+                else -> ""
+            }
+
+            if (hargaKendaraanMap.containsKey(jenisKendaraan)) {
+                etHargaPerKg.setText(hargaKendaraanMap[jenisKendaraan])
+            } else {
+                etHargaPerKg.setText("")
+            }
+
+            // Reset total harga saat jenis kendaraan berubah, karena jumlah stok bisa belum diisi
+            etTotalHarga.setText("")
+        }
+
+        // Saat jumlah stok diubah, baru hitung total harga
+        etJumlahStok.doAfterTextChanged {
+            val jumlah = etJumlahStok.text.toString().toDoubleOrNull()
+            val hargaPerKg = etHargaPerKg.text.toString().toDoubleOrNull()
+
+            if (jumlah != null && hargaPerKg != null) {
+                val total = jumlah * hargaPerKg
+                etTotalHarga.setText(total.toString())
+            } else {
+                etTotalHarga.setText("") // Kosongkan jika salah satu input tidak valid
+            }
+        }
+
         btnSimpan.setOnClickListener {
             val jumlahStok = etJumlahStok.text.toString().trim()
             val hargaPerKg = etHargaPerKg.text.toString().trim()
             val totalHarga = etTotalHarga.text.toString().trim()
-
             val selectedJenis = when (radioGroup.checkedRadioButtonId) {
                 R.id.radioMobil -> "Mobil"
                 R.id.radioMotor -> "Motor"
                 else -> ""
             }
 
-            // Cek apakah ada input yang kosong
             if (TextUtils.isEmpty(jumlahStok) ||
                 TextUtils.isEmpty(hargaPerKg) ||
                 TextUtils.isEmpty(totalHarga) ||
                 TextUtils.isEmpty(selectedJenis)) {
 
                 Toast.makeText(this, "Harap isi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            if (latitude == null || longitude == null) {
+                Toast.makeText(this, "Lokasi tidak tersedia, nyalakan GPS dan coba lagi!", Toast.LENGTH_SHORT).show()
+                Log.d("TambahStokActivity", "Koordinat: Tidak tersedia")
                 return@setOnClickListener
             }
 
@@ -107,15 +147,37 @@ class TambahStokActivity : AppCompatActivity() {
             Log.d("TambahStokActivity", "Jumlah Stok: $jumlahStok")
             Log.d("TambahStokActivity", "Harga per kg: $hargaPerKg")
             Log.d("TambahStokActivity", "Total Harga: $totalHarga")
-
-            if (latitude != null && longitude != null) {
-                Log.d("TambahStokActivity", "Koordinat: $latitude, $longitude")
-            } else {
-                Log.d("TambahStokActivity", "Koordinat: Tidak tersedia")
-            }
+            Log.d("TambahStokActivity", "Koordinat: $latitude, $longitude")
 
             Toast.makeText(this, "Data Berhasil Disimpan", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun fetchHargaKendaraan() {
+        val apiService = RetrofitClient.instance
+        apiService.getHargaKendaraan().enqueue(object : Callback<HargaResponse> {
+            override fun onResponse(call: Call<HargaResponse>, response: Response<HargaResponse>) {
+                if (response.isSuccessful) {
+                    response.body()?.data?.forEach {
+                        hargaKendaraanMap[it.jenis] = it.harga
+                    }
+                    Log.d("Response API", "Harga kendaraan: $hargaKendaraanMap")
+                } else {
+                    Log.e("Response API", "Response gagal: ${response.errorBody()?.string()}")
+                }
+            }
+
+            override fun onFailure(call: Call<HargaResponse>, t: Throwable) {
+                Log.e("API Error", "Gagal mengambil data harga kendaraan: ${t.message}")
+            }
+        })
+    }
+
+    private fun updateTotalHarga(etJumlahStok: EditText, etHargaPerKg: EditText, etTotalHarga: EditText) {
+        val jumlah = etJumlahStok.text.toString().toDoubleOrNull() ?: 0.0
+        val hargaPerKg = etHargaPerKg.text.toString().toDoubleOrNull() ?: 0.0
+        val total = jumlah * hargaPerKg
+        etTotalHarga.setText(total.toString())
     }
 
     private fun isGPSEnabled(): Boolean {

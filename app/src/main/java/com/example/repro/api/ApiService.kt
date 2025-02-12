@@ -1,13 +1,14 @@
 package com.example.repro.api
 
-import com.example.repro.modal.getHargaBan
-import com.example.repro.modal.postHargaBan
-import com.example.repro.modal.Ambil
-import com.example.repro.modal.getPemasok
-import com.example.repro.modal.getStokByPemasokId
-import com.example.repro.modal.getTotalStokPemasok
-import com.example.repro.modal.getAmbilStok
-import com.example.repro.modal.getRiwayatPemasok
+import com.example.repro.model.getHargaBan
+import com.example.repro.model.postHargaBan
+import com.example.repro.model.Ambil
+import com.example.repro.model.HargaResponse
+import com.example.repro.model.getPemasok
+import com.example.repro.model.getStokByPemasokId
+import com.example.repro.model.getTotalStokPemasok
+import com.example.repro.model.getAmbilStok
+import com.example.repro.model.getRiwayatPemasok
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -26,6 +27,9 @@ interface ApiService {
 
     @GET("get_stok_belum_diambil.php")
     fun getAmbilStok(): Call<ApiResponse<List<getAmbilStok>>>
+
+    @GET("get_harga_ban.php") // Sesuaikan dengan endpoint API
+    fun getHargaKendaraan(): Call<HargaResponse>
 
     @GET("get_ambil.php")
     fun getAmbil(): Call<List<Ambil>>

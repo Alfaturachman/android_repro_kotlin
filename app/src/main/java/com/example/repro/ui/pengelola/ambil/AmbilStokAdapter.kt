@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
-import com.example.repro.modal.getAmbilStok
+import com.example.repro.model.getAmbilStok
 import java.util.Locale
 
 class AmbilStokAdapter(

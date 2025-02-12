@@ -20,7 +20,7 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.example.repro.databinding.FragmentHomeBinding
-import com.example.repro.modal.getTotalStokPemasok
+import com.example.repro.model.getTotalStokPemasok
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import retrofit2.Call

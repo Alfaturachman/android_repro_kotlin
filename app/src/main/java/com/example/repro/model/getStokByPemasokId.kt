@@ -1,4 +1,4 @@
-package com.example.repro.modal
+package com.example.repro.model
 
 data class getStokByPemasokId(
     val id: Int,

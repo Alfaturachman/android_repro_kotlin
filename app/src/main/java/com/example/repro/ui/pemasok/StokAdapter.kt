@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
-import com.example.repro.modal.getStokByPemasokId
+import com.example.repro.model.getStokByPemasokId
 
 class StokAdapter(private val stokList: List<getStokByPemasokId>) : RecyclerView.Adapter<StokAdapter.StokViewHolder>() {
 

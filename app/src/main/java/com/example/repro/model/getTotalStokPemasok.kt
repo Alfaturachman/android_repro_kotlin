@@ -1,4 +1,4 @@
-package com.example.repro.modal
+package com.example.repro.model
 
 import com.google.gson.annotations.SerializedName
 

@@ -12,7 +12,7 @@ import com.example.repro.api.ApiResponse
 import com.example.repro.api.RetrofitClient
 import com.example.repro.databinding.FragmentHargaBanBinding
 import com.example.repro.ui.harga_ban.tambah.TambahHargaActivity
-import com.example.repro.modal.postHargaBan
+import com.example.repro.model.postHargaBan
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

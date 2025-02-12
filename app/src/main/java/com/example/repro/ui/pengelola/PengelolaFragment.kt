@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.api.RetrofitClient
 import com.example.repro.api.ApiResponse
 import com.example.repro.databinding.FragmentPengelolaBinding
-import com.example.repro.modal.getPemasok
+import com.example.repro.model.getPemasok
 import com.example.repro.ui.pengelola.ambil.AmbilStokActivity
 import retrofit2.Call
 import retrofit2.Callback

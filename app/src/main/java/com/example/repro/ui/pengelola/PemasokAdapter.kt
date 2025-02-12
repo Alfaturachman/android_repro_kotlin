@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
-import com.example.repro.modal.getPemasok
+import com.example.repro.model.getPemasok
 import com.example.repro.ui.pengelola.riwayat_detail.RiwayatDetailActivity
 
 class PemasokAdapter(

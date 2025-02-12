@@ -10,7 +10,7 @@ import com.example.repro.R
 import com.example.repro.utils.TSP
 import com.example.repro.api.ApiResponse
 import com.example.repro.api.RetrofitClient
-import com.example.repro.modal.getAmbilStok
+import com.example.repro.model.getAmbilStok
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

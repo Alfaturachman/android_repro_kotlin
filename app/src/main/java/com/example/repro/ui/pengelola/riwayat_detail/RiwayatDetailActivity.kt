@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.repro.R
 import com.example.repro.api.ApiResponse
 import com.example.repro.api.RetrofitClient
-import com.example.repro.modal.getRiwayatPemasok
+import com.example.repro.model.getRiwayatPemasok
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

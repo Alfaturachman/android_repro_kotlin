@@ -1,4 +1,4 @@
-package com.example.repro.modal
+package com.example.repro.model
 
 data class getAmbilStok(
     val id: String,

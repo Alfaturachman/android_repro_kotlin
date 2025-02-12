@@ -1,7 +1,7 @@
 package com.example.repro.utils
 
 import kotlin.math.*
-import com.example.repro.modal.getAmbilStok
+import com.example.repro.model.getAmbilStok
 
 object TSP {
 
