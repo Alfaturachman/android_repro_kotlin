@@ -2,13 +2,13 @@ package com.example.repro.ui.pemasok
 
 import android.Manifest
 import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import android.widget.*
@@ -21,9 +21,13 @@ import com.google.android.gms.location.LocationServices
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import android.os.Handler
+import android.text.TextUtils
 
 class TambahStokActivity : AppCompatActivity() {
 
+    private lateinit var handler: Handler
+    private lateinit var runnable: Runnable
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var latitude: Double? = null
     private var longitude: Double? = null
@@ -43,9 +47,16 @@ class TambahStokActivity : AppCompatActivity() {
         val etTotalHarga = findViewById<EditText>(R.id.etTotalHarga)
         val btnSimpan = findViewById<Button>(R.id.btnSimpanStok)
 
-        // Tampilkan tanggal otomatis
-        val currentDate = SimpleDateFormat("dd MMMM yyyy", Locale("id", "ID")).format(Date())
-        etTanggal.setText(currentDate)
+        handler = Handler(Looper.getMainLooper())
+
+        runnable = object : Runnable {
+            override fun run() {
+                val currentDateTime = SimpleDateFormat("dd MMMM yyyy HH:mm:ss", Locale("id", "ID")).format(Date())
+                etTanggal.setText(currentDateTime)
+                handler.postDelayed(this, 1000)
+            }
+        }
+        handler.post(runnable)
 
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
@@ -67,18 +78,29 @@ class TambahStokActivity : AppCompatActivity() {
             finish()
         }
 
-        // Event klik tombol simpan
+        // Button Simpan
         btnSimpan.setOnClickListener {
-            val tanggal = etTanggal.text.toString()
-            val jumlahStok = etJumlahStok.text.toString()
-            val hargaPerKg = etHargaPerKg.text.toString()
-            val totalHarga = etTotalHarga.text.toString()
+            val jumlahStok = etJumlahStok.text.toString().trim()
+            val hargaPerKg = etHargaPerKg.text.toString().trim()
+            val totalHarga = etTotalHarga.text.toString().trim()
 
             val selectedJenis = when (radioGroup.checkedRadioButtonId) {
                 R.id.radioMobil -> "Mobil"
                 R.id.radioMotor -> "Motor"
-                else -> "Tidak Dipilih"
+                else -> ""
             }
+
+            // Cek apakah ada input yang kosong
+            if (TextUtils.isEmpty(jumlahStok) ||
+                TextUtils.isEmpty(hargaPerKg) ||
+                TextUtils.isEmpty(totalHarga) ||
+                TextUtils.isEmpty(selectedJenis)) {
+
+                Toast.makeText(this, "Harap isi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val tanggal = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale("id", "ID")).format(Date())
 
             Log.d("TambahStokActivity", "Tanggal: $tanggal")
             Log.d("TambahStokActivity", "Jenis Kendaraan: $selectedJenis")
@@ -86,7 +108,6 @@ class TambahStokActivity : AppCompatActivity() {
             Log.d("TambahStokActivity", "Harga per kg: $hargaPerKg")
             Log.d("TambahStokActivity", "Total Harga: $totalHarga")
 
-            // Simpan koordinat ke log
             if (latitude != null && longitude != null) {
                 Log.d("TambahStokActivity", "Koordinat: $latitude, $longitude")
             } else {
@@ -147,5 +168,10 @@ class TambahStokActivity : AppCompatActivity() {
                 }
             }
         }, null)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacks(runnable) // Hentikan handler saat activity dihancurkan
     }
 }
