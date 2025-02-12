@@ -1,7 +1,5 @@
 package com.example.repro.ui.harga_ban
 
-import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +8,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
 import com.example.repro.model.postHargaBan
-import com.example.repro.ui.harga_ban.edit.EditHargaActivity
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 
-class HargaBanAdapter(private val hargaBanList: List<postHargaBan>) : RecyclerView.Adapter<HargaBanAdapter.HargaBanViewHolder>() {
+class HargaBanAdapter(
+    private val hargaBanList: List<postHargaBan>,
+    private val onItemClick: (postHargaBan) -> Unit
+) : RecyclerView.Adapter<HargaBanAdapter.HargaBanViewHolder>() {
 
     class HargaBanViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvJenisBan: TextView = itemView.findViewById(R.id.tvJenisBan)
@@ -31,12 +31,10 @@ class HargaBanAdapter(private val hargaBanList: List<postHargaBan>) : RecyclerVi
     override fun onBindViewHolder(holder: HargaBanViewHolder, position: Int) {
         val hargaBan = hargaBanList[position]
 
-        // Instance DecimalFormatSymbols
+        // Format harga
         val symbols = DecimalFormatSymbols().apply {
-            groupingSeparator = '.' // Mengatur pemisah menjadi titik
+            groupingSeparator = '.'
         }
-
-        // Buat DecimalFormat dengan simbol yang sudah diatur
         val formatter = DecimalFormat("#,###", symbols)
         val formattedHarga = formatter.format(hargaBan.harga)
 
@@ -44,13 +42,9 @@ class HargaBanAdapter(private val hargaBanList: List<postHargaBan>) : RecyclerVi
         holder.tvHarga.text = "Rp $formattedHarga"
         holder.tvTanggal.text = hargaBan.ins_time
 
+        // Handle klik tombol edit
         holder.btnEditHargaBan.setOnClickListener {
-            val intent = Intent(holder.itemView.context, EditHargaActivity::class.java)
-            intent.putExtra("id", hargaBan.id)
-            intent.putExtra("jenis", hargaBan.jenis)
-            intent.putExtra("harga", hargaBan.harga.toFloat())
-            holder.itemView.context.startActivity(intent)
-            Log.d("HargaBanAdapter", "ID: ${hargaBan.id}, Jenis: ${hargaBan.jenis}, Harga: ${hargaBan.harga}")
+            onItemClick(hargaBan) // Panggil callback
         }
     }
 

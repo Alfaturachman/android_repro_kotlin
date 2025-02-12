@@ -39,7 +39,7 @@ class PemasokFragment : Fragment() {
         recyclerView = binding.recyclerViewDaftarStok
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        // Ambil id_pemasok dari SharedPreferences
+        // ID dari SharedPreferences
         val pemasokId = getPemasokIdFromSharedPreferences()
         if (pemasokId != -1) {
             getStokData(pemasokId)
