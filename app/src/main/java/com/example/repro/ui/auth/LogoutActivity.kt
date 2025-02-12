@@ -1,35 +1,29 @@
-package com.example.iconnet.ui.auth
+package com.example.repro.ui.auth
 
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.repro.ui.auth.LoginActivity
+import com.example.repro.R
 
 class LogoutActivity : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflasi layout kosong untuk fragment ini (meskipun proses logout tidak membutuhkan UI)
+        val view = inflater.inflate(R.layout.activity_logout, container, false)
 
-        // Tampilkan konfirmasi logout
-        showLogoutConfirmationDialog()
-    }
+        // Proses logout
+        logoutUser()
 
-    private fun showLogoutConfirmationDialog() {
-        AlertDialog.Builder(requireContext()).apply {
-            setTitle("Konfirmasi Logout")
-            setMessage("Apakah Anda yakin ingin logout?")
-            setPositiveButton("Ya") { _, _ ->
-                logoutUser()
-            }
-            setNegativeButton("Tidak") { dialog, _ ->
-                dialog.dismiss()
-                requireActivity().onBackPressedDispatcher.onBackPressed() // Kembali ke sebelumnya
-            }
-            setCancelable(false)
-        }.show()
+        return view
     }
 
     private fun logoutUser() {
