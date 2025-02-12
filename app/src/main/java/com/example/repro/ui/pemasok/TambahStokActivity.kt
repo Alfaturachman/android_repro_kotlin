@@ -30,6 +30,7 @@ import com.example.repro.model.HargaResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.NumberFormat
 
 class TambahStokActivity : AppCompatActivity() {
 
@@ -93,32 +94,32 @@ class TambahStokActivity : AppCompatActivity() {
             }
 
             if (hargaKendaraanMap.containsKey(jenisKendaraan)) {
-                etHargaPerKg.setText(hargaKendaraanMap[jenisKendaraan])
+                val hargaPerKg = hargaKendaraanMap[jenisKendaraan]?.toDoubleOrNull() ?: 0.0
+                etHargaPerKg.setText(formatRupiah(hargaPerKg))
             } else {
                 etHargaPerKg.setText("")
             }
 
-            // Reset total harga saat jenis kendaraan berubah, karena jumlah stok bisa belum diisi
             etTotalHarga.setText("")
         }
 
         // Saat jumlah stok diubah, baru hitung total harga
         etJumlahStok.doAfterTextChanged {
             val jumlah = etJumlahStok.text.toString().toDoubleOrNull()
-            val hargaPerKg = etHargaPerKg.text.toString().toDoubleOrNull()
+            val hargaPerKg = parseRupiahToInt(etHargaPerKg.text.toString()).toDouble() // Perbaiki ini!
 
-            if (jumlah != null && hargaPerKg != null) {
+            if (jumlah != null) {
                 val total = jumlah * hargaPerKg
-                etTotalHarga.setText(total.toString())
+                etTotalHarga.setText(formatRupiah(total))
             } else {
-                etTotalHarga.setText("") // Kosongkan jika salah satu input tidak valid
+                etTotalHarga.setText("")
             }
         }
 
         btnSimpan.setOnClickListener {
             val jumlahStok = etJumlahStok.text.toString().trim()
-            val hargaPerKg = etHargaPerKg.text.toString().trim()
-            val totalHarga = etTotalHarga.text.toString().trim()
+            val hargaPerKg = parseRupiahToInt(etHargaPerKg.text.toString()).toString()
+            val totalHarga = parseRupiahToInt(etTotalHarga.text.toString()).toString()
             val selectedJenis = when (radioGroup.checkedRadioButtonId) {
                 R.id.radioMobil -> "Mobil"
                 R.id.radioMotor -> "Motor"
@@ -131,12 +132,6 @@ class TambahStokActivity : AppCompatActivity() {
                 TextUtils.isEmpty(selectedJenis)) {
 
                 Toast.makeText(this, "Harap isi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            if (latitude == null || longitude == null) {
-                Toast.makeText(this, "Lokasi tidak tersedia, nyalakan GPS dan coba lagi!", Toast.LENGTH_SHORT).show()
-                Log.d("TambahStokActivity", "Koordinat: Tidak tersedia")
                 return@setOnClickListener
             }
 
@@ -230,6 +225,18 @@ class TambahStokActivity : AppCompatActivity() {
                 }
             }
         }, null)
+    }
+
+    fun formatRupiah(value: Double): String {
+        val formatter = NumberFormat.getCurrencyInstance(Locale("id", "ID"))
+        return formatter.format(value).replace(",00", "") // Hapus desimal jika tidak diperlukan
+    }
+
+    fun parseRupiahToInt(rupiah: String): Int {
+        return rupiah.replace("Rp", "")
+            .replace(".", "")
+            .trim()
+            .toIntOrNull() ?: 0
     }
 
     override fun onDestroy() {
