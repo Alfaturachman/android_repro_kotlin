@@ -31,10 +31,6 @@ class HargaBanFragment : Fragment() {
         _binding = FragmentHargaBanBinding.inflate(inflater, container, false)
         val root = binding.root
 
-        binding.btnTambahHarga.setOnClickListener {
-            val intent = Intent(context, TambahHargaActivity::class.java)
-            startActivity(intent)
-        }
         recyclerView = binding.recyclerViewDaftarHargaBan
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 

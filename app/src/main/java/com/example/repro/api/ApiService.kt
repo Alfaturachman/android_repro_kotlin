@@ -4,6 +4,7 @@ import com.example.repro.model.getHargaBan
 import com.example.repro.model.postHargaBan
 import com.example.repro.model.Ambil
 import com.example.repro.model.HargaResponse
+import com.example.repro.model.UpdateHargaBanRequest
 import com.example.repro.model.getPemasok
 import com.example.repro.model.getStokByPemasokId
 import com.example.repro.model.getTotalStokPemasok
@@ -28,7 +29,7 @@ interface ApiService {
     @GET("get_stok_belum_diambil.php")
     fun getAmbilStok(): Call<ApiResponse<List<getAmbilStok>>>
 
-    @GET("get_harga_ban.php") // Sesuaikan dengan endpoint API
+    @GET("get_harga_ban.php")
     fun getHargaKendaraan(): Call<HargaResponse>
 
     @GET("get_ambil.php")
@@ -56,4 +57,7 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     @POST("post_harga_ban.php")
     fun tambahHargaBan(@Body getHargaBan: getHargaBan): Call<ApiResponse<getHargaBan>>
+
+    @POST("update_harga_ban.php")
+    fun updateHargaBan(@Body request: UpdateHargaBanRequest): Call<ApiResponse<UpdateHargaBanRequest>>
 }
