@@ -43,6 +43,15 @@ class HargaBanFragment : Fragment() {
         return root
     }
 
+    // Terima update dari EditHargaActivity
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == EDIT_HARGA_REQUEST_CODE && resultCode == RESULT_OK) {
+            // Perbarui data di Fragment
+            fetchHargaBanData()
+        }
+    }
+
     private fun fetchHargaBanData() {
         RetrofitClient.instance.getHargaBan().enqueue(object : Callback<ApiResponse<List<postHargaBan>>> {
             override fun onResponse(call: Call<ApiResponse<List<postHargaBan>>>, response: Response<ApiResponse<List<postHargaBan>>>) {
@@ -63,15 +72,6 @@ class HargaBanFragment : Fragment() {
                 // Handle failure
             }
         })
-    }
-
-    // Terima hasil dari EditHargaActivity
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == EDIT_HARGA_REQUEST_CODE && resultCode == RESULT_OK) {
-            // Perbarui data di Fragment
-            fetchHargaBanData()
-        }
     }
 
     override fun onDestroyView() {

@@ -23,7 +23,6 @@ import java.util.Date
 import java.util.Locale
 import android.os.Handler
 import android.text.TextUtils
-import androidx.core.widget.addTextChangedListener
 import androidx.core.widget.doAfterTextChanged
 import com.example.repro.api.RetrofitClient
 import com.example.repro.model.HargaResponse

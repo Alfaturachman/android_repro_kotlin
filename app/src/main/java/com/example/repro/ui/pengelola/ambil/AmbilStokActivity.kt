@@ -1,9 +1,21 @@
 package com.example.repro.ui.pengelola.ambil
 
+import android.Manifest
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
@@ -11,6 +23,8 @@ import com.example.repro.utils.TSP
 import com.example.repro.api.ApiResponse
 import com.example.repro.api.RetrofitClient
 import com.example.repro.model.getAmbilStok
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,6 +33,8 @@ class AmbilStokActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: AmbilStokAdapter
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var tvTotalJarakKeseluruhan: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,10 +43,13 @@ class AmbilStokActivity : AppCompatActivity() {
 
         window.statusBarColor = resources.getColor(R.color.white, theme)
 
+        // Inisialisasi TextView untuk total jarak
+        tvTotalJarakKeseluruhan = findViewById(R.id.tvTotalJarakKeseluruhan) // Tambahkan ini
+
         // Button Kembali
         val btnKembali: ImageButton = findViewById(R.id.btnKembali)
         btnKembali.setOnClickListener {
-            finish() // Menutup activity dan kembali ke fragment sebelumnya
+            finish()
         }
 
         // Inisialisasi RecyclerView
@@ -39,17 +58,70 @@ class AmbilStokActivity : AppCompatActivity() {
 
         // Ambil data dari API
         fetchAmbilStokData()
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        if (isGPSEnabled()) {
+
+        } else {
+            showGPSDialog()
+        }
     }
 
-    // Fungsi untuk mengambil data pemasok dari API dan menghitung TSP
     private fun fetchAmbilStokData() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+
+        // Pastikan izin lokasi sudah diberikan
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+            return
+        }
+
+        // Coba ambil lokasi terakhir
+        fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+            if (location != null) {
+                Log.d("GPS_DEBUG", "Lokasi berhasil didapatkan: ${location.latitude}, ${location.longitude}")
+                processAmbilStokData(location.latitude, location.longitude)
+            } else {
+                Log.e("GPS_DEBUG", "lastLocation mengembalikan null, mencoba mendapatkan lokasi terbaru...")
+                requestNewLocation()
+            }
+        }.addOnFailureListener { e ->
+            Log.e("GPS_DEBUG", "Gagal mendapatkan lokasi terakhir: ${e.message}")
+        }
+    }
+
+    private fun requestNewLocation() {
+        val locationRequest = com.google.android.gms.location.LocationRequest.create().apply {
+            priority = com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 5000 // Update setiap 5 detik
+            fastestInterval = 2000
+        }
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.requestLocationUpdates(locationRequest, object :
+                com.google.android.gms.location.LocationCallback() {
+                override fun onLocationResult(locationResult: com.google.android.gms.location.LocationResult) {
+                    val location = locationResult.lastLocation
+                    if (location != null) {
+                        Log.d("GPS_DEBUG", "Lokasi real-time didapatkan: ${location.latitude}, ${location.longitude}")
+                        processAmbilStokData(location.latitude, location.longitude)
+                        fusedLocationClient.removeLocationUpdates(this)
+                    } else {
+                        Log.e("GPS_DEBUG", "Lokasi real-time tetap null.")
+                    }
+                }
+            }, null)
+        }
+    }
+
+    private fun processAmbilStokData(latitude: Double, longitude: Double) {
+        val pengelolaLokasi = "$latitude,$longitude"
+
         RetrofitClient.instance.getAmbilStok().enqueue(object : Callback<ApiResponse<List<getAmbilStok>>> {
             override fun onResponse(call: Call<ApiResponse<List<getAmbilStok>>>, response: Response<ApiResponse<List<getAmbilStok>>>) {
                 if (response.isSuccessful && response.body()?.status == true) {
                     val ambilStokList = response.body()?.data ?: emptyList()
 
-                    // Tambahkan lokasi pengelola secara statis
-                    val pengelolaLokasi = "-6.748135,111.056280"
                     val pengelola = getAmbilStok(
                         id = "0",
                         id_pemasok = "0",
@@ -64,36 +136,45 @@ class AmbilStokActivity : AppCompatActivity() {
                         status = "-"
                     )
 
-                    // Gabungkan pengelola dengan pemasok dari database
                     val combinedList = mutableListOf(pengelola)
                     combinedList.addAll(ambilStokList)
 
-                    // Hitung matriks jarak dan jalankan TSP
                     val distanceMatrix = TSP.calculateDistanceMatrix(combinedList)
                     val (tour, totalDistance) = TSP.nearestNeighborTSP(distanceMatrix, 0)
 
-                    println("Jarak setiap pemasok ke pengelola:")
-                    for (i in 1 until combinedList.size) { // Mulai dari 1 agar tidak menghitung pengelola ke dirinya sendiri
-                        val pemasok = combinedList[i]
-                        val jarak = distanceMatrix[0][i] // Selalu dari pengelola (index 0) ke pemasok i
-                        println("Pemasok ${pemasok.nama_pemasok} = ${"%.2f".format(jarak)} km")
+                    tvTotalJarakKeseluruhan.text = "${"%.2f".format(totalDistance)}"
+
+                    val jarakPemasokList = mutableListOf<Double>()
+                    for (i in 1 until combinedList.size) {
+                        jarakPemasokList.add(distanceMatrix[0][i])
                     }
 
-                    // Tambahkan total jarak keseluruhan
-                    println("Total Jarak Keseluruhan: ${"%.2f".format(totalDistance)} km")
-
-                    // Ambil hasil rute tanpa titik awal terakhir untuk menghindari duplikasi
                     val sortedAmbilStokList = tour.drop(1).map { index -> combinedList[index] }
 
-                    // Set adapter dengan data yang sudah diurutkan
-                    adapter = AmbilStokAdapter(sortedAmbilStokList, this@AmbilStokActivity)
+                    adapter = AmbilStokAdapter(sortedAmbilStokList, jarakPemasokList, this@AmbilStokActivity)
                     recyclerView.adapter = adapter
                 }
             }
 
             override fun onFailure(call: Call<ApiResponse<List<getAmbilStok>>>, t: Throwable) {
-                // Handle failure
+                Log.e("API_DEBUG", "Gagal memuat data dari API: ${t.message}")
             }
         })
+    }
+
+    private fun isGPSEnabled(): Boolean {
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    }
+
+    private fun showGPSDialog() {
+        AlertDialog.Builder(this)
+            .setTitle("GPS Tidak Aktif")
+            .setMessage("GPS harus diaktifkan untuk mendapatkan lokasi.")
+            .setPositiveButton("Aktifkan") { _, _ ->
+                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            }
+            .setNegativeButton("Batal", null)
+            .show()
     }
 }

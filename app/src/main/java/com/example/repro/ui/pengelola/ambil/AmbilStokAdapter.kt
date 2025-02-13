@@ -13,6 +13,7 @@ import java.util.Locale
 
 class AmbilStokAdapter(
     private val getAmbilStokList: List<getAmbilStok>,
+    private val jarakPemasokList: List<Double>, // Tambahkan ini
     private val context: Context
 ) : RecyclerView.Adapter<AmbilStokAdapter.AmbilStokViewHolder>() {
 
@@ -23,6 +24,7 @@ class AmbilStokAdapter(
         val tvJenisBan: TextView = itemView.findViewById(R.id.tvJenisBan)
         val tvTotalBerat: TextView = itemView.findViewById(R.id.tvTotalBerat)
         val tvTotalHarga: TextView = itemView.findViewById(R.id.tvTotalHarga)
+        val tvJarak: TextView = itemView.findViewById(R.id.tvJarak) // Tambahkan ini
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AmbilStokViewHolder {
@@ -32,6 +34,7 @@ class AmbilStokAdapter(
 
     override fun onBindViewHolder(holder: AmbilStokViewHolder, position: Int) {
         val ambilStok = getAmbilStokList[position]
+        val jarak = jarakPemasokList[position] // Ambil jarak dari list
 
         // Format harga dengan DecimalFormat
         val formatter = java.text.DecimalFormat("#,###")
@@ -43,6 +46,7 @@ class AmbilStokAdapter(
         holder.tvJenisBan.text = ambilStok.jenis
         holder.tvTotalBerat.text = "${ambilStok.total_berat} kg"
         holder.tvTotalHarga.text = "Rp $formattedTotalHarga"
+        holder.tvJarak.text = "Jarak: ${"%.2f".format(jarak)} km" // Set jarak ke TextView
 
         // Ubah koordinat menjadi alamat
         val location = ambilStok.lokasi.split(",")
@@ -71,11 +75,11 @@ class AmbilStokAdapter(
             if (addresses?.isNotEmpty() == true) {
                 val address = addresses[0]
                 val addressParts = listOfNotNull(
-                    address.thoroughfare, // Nama jalan
-                    address.subLocality, // Kelurahan
-                    address.locality, // Kecamatan
-                    address.adminArea, // Kota/Kabupaten
-                    address.postalCode // Kode pos
+                    address.thoroughfare,
+                    address.subLocality,
+                    address.locality,
+                    address.adminArea,
+                    address.postalCode
                 )
                 addressParts.joinToString(", ")
             } else {

@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import retrofit2.Call
@@ -76,6 +77,12 @@ class EditHargaActivity : AppCompatActivity() {
                 .toDouble().toInt()
 
             updateHargaBan(idHargaBan, hargaBaru)
+        }
+
+        // Button Kembali
+        val btnKembali: ImageButton = findViewById(R.id.btnKembali)
+        btnKembali.setOnClickListener {
+            finish()
         }
     }
 
