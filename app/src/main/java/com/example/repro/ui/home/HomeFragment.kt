@@ -14,14 +14,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.repro.api.RetrofitClient
 import com.example.repro.api.ApiResponse
-import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.example.repro.databinding.FragmentHomeBinding
 import com.example.repro.model.getTotalStokPemasok
+import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,7 +31,7 @@ import java.util.HashMap
 class HomeFragment : Fragment() {
     private lateinit var pemasokTotalBelumAmbil: TextView
     private lateinit var pemasokTotalSudahAmbil: TextView
-    private lateinit var laporanDataPemasok: BarChart
+    private lateinit var laporanDataPemasok: LineChart
     private lateinit var CardViewPemasokTotalBelumDiambil: CardView
     private lateinit var CardViewPemasokTotalSudahDiambil: CardView
     private lateinit var CardViewPengelolaTotalBanBekas: CardView
@@ -125,7 +125,7 @@ class HomeFragment : Fragment() {
                     pemasokTotalSudahAmbil.text = "${stokData.sudahDiambil}"
 
                     // Siapkan data untuk BarChart
-                    val entries = ArrayList<BarEntry>()
+                    val entries = ArrayList<Entry>()
 
                     // Buat array untuk 12 bulan
                     val stokPerBulan = FloatArray(12) { 0f } // Inisialisasi dengan nilai 0
@@ -140,18 +140,18 @@ class HomeFragment : Fragment() {
 
                     // Tambahkan data ke entries
                     for (i in 0 until 12) {
-                        entries.add(BarEntry(i.toFloat() + 1, stokPerBulan[i])) // Bulan dimulai dari 1
+                        entries.add(Entry(i.toFloat() + 1, stokPerBulan[i])) // Bulan dimulai dari 1
                     }
 
                     // Set data set untuk BarChart
-                    val dataSet = BarDataSet(entries, "Stok per Bulan") // Label untuk dataset
+                    val dataSet = LineDataSet(entries, "Stok per Bulan") // Label untuk dataset
                     dataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()
 
                     // Buat BarData
-                    val barData = BarData(dataSet)
+                    val lineData = LineData(dataSet)
 
                     // Set data ke chart
-                    laporanDataPemasok.data = barData
+                    laporanDataPemasok.data = lineData
 
                     // Atur sumbu X (bulan)
                     val bulanLabels = arrayOf(

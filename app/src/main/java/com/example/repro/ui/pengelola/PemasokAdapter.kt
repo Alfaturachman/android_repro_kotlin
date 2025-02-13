@@ -26,8 +26,8 @@ class PemasokAdapter(
         val pemasok = getPemasokList[position]
         holder.tvNamaPemasok.text = pemasok.nama
         holder.tvNamaUsaha.text = pemasok.namaUsaha
-        holder.tvNoHp.text = pemasok.noHp
-        holder.tvAlamat.text = pemasok.alamat
+        holder.tvNoHp.text = "Nomor HP: ${pemasok.noHp}"
+        holder.tvAlamat.text = "Alamat: ${pemasok.alamat}"
     }
 
     override fun getItemCount(): Int = getPemasokList.size
@@ -52,7 +52,7 @@ class PemasokAdapter(
         private fun handleAmbilClick(getPemasok: getPemasok) {
             val context = itemView.context
             val intent = Intent(context, RiwayatDetailActivity::class.java).apply {
-                putExtra("PEMASOK_ID", getPemasok.id) // Mengirim ID pemasok
+                putExtra("PEMASOK_ID", getPemasok.id)
             }
             context.startActivity(intent)
         }

@@ -24,7 +24,7 @@
     <style name="ButtonAlertGrey" parent="Widget.AppCompat.Button.Borderless.Colored">
         <item name="android:background">@drawable/button_dialog_background</item>
         <item name="backgroundTint">@color/grey_100</item>
-        <item name="android:textColor">@color/grey_900</item>
+        <item name="android:textColor">@color/grey_950</item>
         <item name="android:textAllCaps">false</item>
     </style>
 

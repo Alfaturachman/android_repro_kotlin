@@ -1,9 +1,11 @@
 package com.example.repro.ui.pengelola.ambil
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.Resources
 import android.location.Geocoder
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +38,7 @@ class AmbilStokAdapter(
         val tvTotalHarga: TextView = itemView.findViewById(R.id.tvTotalHarga)
         val tvJarak: TextView = itemView.findViewById(R.id.tvJarak)
         val btnAmbilStok: ImageView = itemView.findViewById(R.id.btnAmbilStok)
+        val btnMaps: ImageView = itemView.findViewById(R.id.btnMaps)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AmbilStokViewHolder {
@@ -62,6 +65,10 @@ class AmbilStokAdapter(
         holder.btnAmbilStok.setOnClickListener {
             showConfirmationDialog(ambilStok)
         }
+
+        holder.btnMaps.setOnClickListener {
+            showMapsConfirmationDialog(ambilStok)
+        }
     }
 
     override fun getItemCount(): Int = getAmbilStokList.size
@@ -76,12 +83,14 @@ class AmbilStokAdapter(
             .create()
 
         // Inisialisasi komponen di custom dialog
+        val tvDialogTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
         val tvDialogMessage = dialogView.findViewById<TextView>(R.id.tvDialogMessage)
         val btnTidak = dialogView.findViewById<Button>(R.id.btnTidak)
         val btnYa = dialogView.findViewById<Button>(R.id.btnYa)
 
         // Set pesan dialog
-        tvDialogMessage.text = "Apakah Anda yakin ingin mengambil stok dari ${ambilStok.nama_pemasok}?"
+        tvDialogTitle.text = "Konfirmasi Ambil Stok"
+        tvDialogMessage.text = "Apakah Anda yakin ingin mengambil stok dari pemilik ${ambilStok.nama_pemasok}?"
 
         // Handle tombol "Tidak"
         btnTidak.setOnClickListener {
@@ -104,6 +113,63 @@ class AmbilStokAdapter(
             (Resources.getSystem().displayMetrics.widthPixels * 0.90).toInt(),  // 90% dari lebar layar
             WindowManager.LayoutParams.WRAP_CONTENT
         )
+    }
+
+    private fun showMapsConfirmationDialog(ambilStok: getAmbilStok) {
+        val dialogView: View = LayoutInflater.from(context).inflate(R.layout.alert_dialog, null)
+
+        val alertDialog = AlertDialog.Builder(context, R.style.CustomAlertDialogTheme)
+            .setView(dialogView)
+            .create()
+
+        val tvDialogMessage = dialogView.findViewById<TextView>(R.id.tvDialogMessage)
+        val tvDialogTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
+        val btnTidak = dialogView.findViewById<Button>(R.id.btnTidak)
+        val btnYa = dialogView.findViewById<Button>(R.id.btnYa)
+
+        tvDialogTitle.text = "Konfirmasi Google Maps"
+        tvDialogMessage.text = "Buka lokasi ${ambilStok.nama_usaha} di Google Maps?"
+
+        btnTidak.setOnClickListener {
+            alertDialog.dismiss()
+        }
+
+        btnYa.setOnClickListener {
+            openGoogleMaps(ambilStok.lokasi, ambilStok.nama_usaha)
+            alertDialog.dismiss()
+        }
+
+        alertDialog.show()
+        val window = alertDialog.window
+        window?.setLayout(
+            (Resources.getSystem().displayMetrics.widthPixels * 0.90).toInt(),
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
+    }
+
+    private fun openGoogleMaps(lokasi: String, namaUsaha: String) {
+        val location = lokasi.split(",")
+        if (location.size != 2) {
+            Toast.makeText(context, "Format koordinat tidak valid", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val latitude = location[0].toDoubleOrNull()
+        val longitude = location[1].toDoubleOrNull()
+        if (latitude == null || longitude == null) {
+            Toast.makeText(context, "Koordinat tidak valid", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val uri = "geo:$latitude,$longitude?q=$latitude,$longitude($namaUsaha)"
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+        intent.setPackage("com.google.android.apps.maps")
+
+        if (intent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(intent)
+        } else {
+            Toast.makeText(context, "Google Maps tidak ditemukan", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun logAmbilStokData(ambilStok: getAmbilStok) {

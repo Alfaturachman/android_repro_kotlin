@@ -4,6 +4,7 @@ import com.example.repro.model.getHargaBan
 import com.example.repro.model.postHargaBan
 import com.example.repro.model.Ambil
 import com.example.repro.model.HargaResponse
+import com.example.repro.model.RiwayatPemasokResponse
 import com.example.repro.model.UpdateHargaBanRequest
 import com.example.repro.model.getPemasok
 import com.example.repro.model.getStokByPemasokId
@@ -60,4 +61,7 @@ interface ApiService {
 
     @POST("update_harga_ban.php")
     fun updateHargaBan(@Body request: UpdateHargaBanRequest): Call<ApiResponse<UpdateHargaBanRequest>>
+
+    @POST("get_olah_by_id.php")
+    fun getAmbilByPemasokId(@Body requestBody: Map<String, Int>): Call<ApiResponse<List<RiwayatPemasokResponse>>>
 }
