@@ -11,7 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.repro.R
 import com.example.repro.api.ApiResponse
 import com.example.repro.api.RetrofitClient
-import com.example.repro.model.getHargaBan
+import com.example.repro.model.HargaBanResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -59,10 +59,10 @@ class TambahHargaActivity : AppCompatActivity() {
             }
 
             // Kirim data ke API
-            val getHargaBan = getHargaBan(tanggal, jenis, harga)
-            RetrofitClient.instance.tambahHargaBan(getHargaBan)
-                .enqueue(object : Callback<ApiResponse<getHargaBan>> {
-                    override fun onResponse(call: Call<ApiResponse<getHargaBan>>, response: Response<ApiResponse<getHargaBan>>) {
+            val HargaBanResponse = HargaBanResponse(tanggal, jenis, harga)
+            RetrofitClient.instance.tambahHargaBan(HargaBanResponse)
+                .enqueue(object : Callback<ApiResponse<HargaBanResponse>> {
+                    override fun onResponse(call: Call<ApiResponse<HargaBanResponse>>, response: Response<ApiResponse<HargaBanResponse>>) {
                         if (response.isSuccessful && response.body()?.status == true) {
                             Toast.makeText(this@TambahHargaActivity, "Harga berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
                             finish()
@@ -71,7 +71,7 @@ class TambahHargaActivity : AppCompatActivity() {
                         }
                     }
 
-                    override fun onFailure(call: Call<ApiResponse<getHargaBan>>, t: Throwable) {
+                    override fun onFailure(call: Call<ApiResponse<HargaBanResponse>>, t: Throwable) {
                         Toast.makeText(this@TambahHargaActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                     }
                 })

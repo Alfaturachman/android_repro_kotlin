@@ -43,13 +43,13 @@ class RiwayatDetailAdapter(
         holder.tvJumlahStokAmbil.text = "${riwayat.jumlahStokAmbil} kg"
 
         holder.btnOlah.setOnClickListener {
-            val intent = Intent(context, OlahActivity::class.java).apply {
+            val intent = Intent(context as RiwayatDetailActivity, OlahActivity::class.java).apply {
                 putExtra("id_ambil", riwayat.idAmbil)
-                putExtra("jumlah_stok", riwayat.jumlahStokAmbil)
+                putExtra("jumlah_stok", riwayat.jumlahStokAmbil.toDouble())
                 putExtra("tanggal_ambil", riwayat.tanggalAmbil)
-                // Add any other data you need to pass to OlahActivity
+                putExtra("jenis", riwayat.jenis)
             }
-            context.startActivity(intent)
+            (context as RiwayatDetailActivity).startActivityForResult(intent, 1001)
         }
 
         if (riwayat.idOlah != null) {

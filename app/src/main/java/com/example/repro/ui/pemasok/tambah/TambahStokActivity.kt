@@ -24,8 +24,9 @@ import java.util.Locale
 import android.os.Handler
 import android.text.TextUtils
 import androidx.core.widget.doAfterTextChanged
+import com.example.repro.api.ApiResponse
 import com.example.repro.api.RetrofitClient
-import com.example.repro.model.HargaResponse
+import com.example.repro.model.HargaKendaraan
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -149,8 +150,8 @@ class TambahStokActivity : AppCompatActivity() {
 
     private fun fetchHargaKendaraan() {
         val apiService = RetrofitClient.instance
-        apiService.getHargaKendaraan().enqueue(object : Callback<HargaResponse> {
-            override fun onResponse(call: Call<HargaResponse>, response: Response<HargaResponse>) {
+        apiService.getHargaKendaraan().enqueue(object : Callback<ApiResponse<List<HargaKendaraan>>> {
+            override fun onResponse(call: Call<ApiResponse<List<HargaKendaraan>>>, response: Response<ApiResponse<List<HargaKendaraan>>>) {
                 if (response.isSuccessful) {
                     response.body()?.data?.forEach {
                         hargaKendaraanMap[it.jenis] = it.harga
@@ -161,7 +162,7 @@ class TambahStokActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<HargaResponse>, t: Throwable) {
+            override fun onFailure(call: Call<ApiResponse<List<HargaKendaraan>>>, t: Throwable) {
                 Log.e("API Error", "Gagal mengambil data harga kendaraan: ${t.message}")
             }
         })

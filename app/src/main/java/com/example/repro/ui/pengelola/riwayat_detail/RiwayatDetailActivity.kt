@@ -1,6 +1,7 @@
 package com.example.repro.ui.pengelola.riwayat_detail
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -27,6 +28,7 @@ class RiwayatDetailActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RiwayatDetailAdapter
     private val riwayatList = mutableListOf<RiwayatPemasokResponse>()
+    private var pemasokId: Int = -1
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,8 +44,8 @@ class RiwayatDetailActivity : AppCompatActivity() {
         etAlamat = findViewById(R.id.etAlamat)
         etNomorHp = findViewById(R.id.etNomorHp)
 
-        // Ambil ID pemasok dari intent
-        val pemasokId = intent.getIntExtra("PEMASOK_ID", -1)
+        // ID pemasok dari intent
+        pemasokId = intent.getIntExtra("PEMASOK_ID", -1)
 
         if (pemasokId != -1) {
             Log.d("Pemasok ID", "Berhasil mengambil pemasok ID: $pemasokId")
@@ -140,4 +142,17 @@ class RiwayatDetailActivity : AppCompatActivity() {
                 }
             })
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1001 && resultCode == RESULT_OK) {
+            refreshData()
+        }
+    }
+
+    private fun refreshData() {
+        // update data
+        loadRiwayatPemasok(pemasokId)
+    }
+
 }

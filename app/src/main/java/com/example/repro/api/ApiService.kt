@@ -1,9 +1,11 @@
 package com.example.repro.api
 
-import com.example.repro.model.getHargaBan
+import com.example.repro.model.HargaBanResponse
 import com.example.repro.model.postHargaBan
 import com.example.repro.model.Ambil
-import com.example.repro.model.HargaResponse
+import com.example.repro.model.HargaKendaraan
+import com.example.repro.model.OlahRequest
+import com.example.repro.model.OlahResponse
 import com.example.repro.model.RiwayatPemasokResponse
 import com.example.repro.model.UpdateHargaBanRequest
 import com.example.repro.model.getPemasok
@@ -31,7 +33,7 @@ interface ApiService {
     fun getAmbilStok(): Call<ApiResponse<List<getAmbilStok>>>
 
     @GET("get_harga_ban.php")
-    fun getHargaKendaraan(): Call<HargaResponse>
+    fun getHargaKendaraan(): Call<ApiResponse<List<HargaKendaraan>>>
 
     @GET("get_ambil.php")
     fun getAmbil(): Call<List<Ambil>>
@@ -57,11 +59,15 @@ interface ApiService {
 
     @Headers("Content-Type: application/json")
     @POST("post_harga_ban.php")
-    fun tambahHargaBan(@Body getHargaBan: getHargaBan): Call<ApiResponse<getHargaBan>>
+    fun tambahHargaBan(@Body HargaBanResponse: HargaBanResponse): Call<ApiResponse<HargaBanResponse>>
 
     @POST("update_harga_ban.php")
     fun updateHargaBan(@Body request: UpdateHargaBanRequest): Call<ApiResponse<UpdateHargaBanRequest>>
 
     @POST("get_olah_by_id.php")
     fun getAmbilByPemasokId(@Body requestBody: Map<String, Int>): Call<ApiResponse<List<RiwayatPemasokResponse>>>
+
+    @Headers("Content-Type: application/json")
+    @POST("post_olah.php")
+    fun simpanOlah(@Body request: OlahRequest): Call<ApiResponse<OlahResponse>>
 }

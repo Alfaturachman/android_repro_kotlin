@@ -1,6 +1,6 @@
 package com.example.repro.model
 
-data class getHargaBan(
+data class HargaBanResponse(
     val tanggal: String,
     val jenis: String,
     val harga: String
