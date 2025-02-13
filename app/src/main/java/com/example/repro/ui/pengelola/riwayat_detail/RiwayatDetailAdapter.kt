@@ -1,5 +1,6 @@
 package com.example.repro.ui.pengelola.riwayat_detail
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,10 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
 import com.example.repro.helper.DateHelper
 import com.example.repro.model.RiwayatPemasokResponse
+import com.example.repro.ui.pengelola.riwayat_detail.olah.OlahActivity
 
-class RiwayatPemasokAdapter(
+class RiwayatDetailAdapter(
     private val riwayatList: MutableList<RiwayatPemasokResponse>
-) : RecyclerView.Adapter<RiwayatPemasokAdapter.RiwayatViewHolder>() {
+) : RecyclerView.Adapter<RiwayatDetailAdapter.RiwayatViewHolder>() {
 
     class RiwayatViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvTanggalDiambil: TextView = itemView.findViewById(R.id.tvTanggalDiambil)
@@ -39,6 +41,16 @@ class RiwayatPemasokAdapter(
 
         holder.tvTanggalDiambil.text = DateHelper.formatTanggal(riwayat.tanggalAmbil)
         holder.tvJumlahStokAmbil.text = "${riwayat.jumlahStokAmbil} kg"
+
+        holder.btnOlah.setOnClickListener {
+            val intent = Intent(context, OlahActivity::class.java).apply {
+                putExtra("id_ambil", riwayat.idAmbil)
+                putExtra("jumlah_stok", riwayat.jumlahStokAmbil)
+                putExtra("tanggal_ambil", riwayat.tanggalAmbil)
+                // Add any other data you need to pass to OlahActivity
+            }
+            context.startActivity(intent)
+        }
 
         if (riwayat.idOlah != null) {
             holder.tvStatus.text = "Sudah diambil"

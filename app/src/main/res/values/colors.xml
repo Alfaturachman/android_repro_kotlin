@@ -32,9 +32,18 @@
     <color name="green">#2bc999</color>
     <color name="green_100">#d1fae8</color>
 
+    <!--  Iphone  -->
     <color name="sky_blue">#007aff</color>
     <color name="amber_orange">#fb9705</color>
     <color name="lush_green">#35c855</color>
+
+    <!-- Xiaomi -->
+    <color name="xiaomi_light_blue">#2ea8fe</color>
+    <color name="xiaomi_light_purple">#a7beea</color>
+    <color name="xiaomi_purple">#8f7bf6</color>
+    <color name="xiaomi_orange">#ff8e4c</color>
+    <color name="xiaomi_yellow">#ffb214</color>
+    <color name="xiaomi_green">#2dce9c</color>
 
     <!-- Badges color -->
     <color name="badge_primary">#0d6efd</color>

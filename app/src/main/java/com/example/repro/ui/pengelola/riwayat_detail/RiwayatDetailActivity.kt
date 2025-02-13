@@ -25,7 +25,7 @@ class RiwayatDetailActivity : AppCompatActivity() {
     private lateinit var etAlamat: TextView
     private lateinit var etNomorHp: TextView
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: RiwayatPemasokAdapter
+    private lateinit var adapter: RiwayatDetailAdapter
     private val riwayatList = mutableListOf<RiwayatPemasokResponse>()
 
     @SuppressLint("MissingInflatedId")
@@ -56,7 +56,7 @@ class RiwayatDetailActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerViewRiwayatPemasok)
         recyclerView.layoutManager = LinearLayoutManager(this@RiwayatDetailActivity)
 
-        adapter = RiwayatPemasokAdapter(riwayatList)
+        adapter = RiwayatDetailAdapter(riwayatList)
         recyclerView.adapter = adapter
 
         // Button Kembali
