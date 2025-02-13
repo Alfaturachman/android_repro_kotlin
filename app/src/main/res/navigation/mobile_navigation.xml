@@ -40,4 +40,9 @@
         android:name="com.example.repro.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_logout"
+        android:name="com.example.repro.ui.auth.LogoutActivity"
+        android:label="@string/menu_logout" />
 </navigation>

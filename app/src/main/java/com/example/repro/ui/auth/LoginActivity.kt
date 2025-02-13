@@ -89,14 +89,16 @@ class LoginActivity : AppCompatActivity() {
                         // Check if the response has the "status" and proceed with parsing
                         if (jsonResponse.getBoolean("status")) {
                             val userDetails = jsonResponse.getJSONObject("user_details")
-                            val userId = jsonResponse.getString("id_user").toInt()  // Convert "id_user" to Int
-                            val userEmail = jsonResponse.getString("email") // Access "email" directly from root
+                            val userDetailId = userDetails.getString("id").toInt()
+                            val userId = jsonResponse.getString("id_user").toInt()
+                            val userEmail = jsonResponse.getString("email")
                             val userLevel = jsonResponse.getString("level")
                             val userNama = userDetails.getString("nama")
 
                             val sharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
                             val editor = sharedPreferences.edit()
-                            editor.putInt("id_user", userId)  // Now storing userId as an Int
+                            editor.putInt("id_user_detail", userDetailId)
+                            editor.putInt("id_user", userId)
                             editor.putString("email", userEmail)
                             editor.putString("level", userLevel)
                             editor.putString("nama", userNama)
