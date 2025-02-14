@@ -53,8 +53,8 @@ class RiwayatDetailAdapter(
         }
 
         if (riwayat.idOlah != null) {
-            holder.tvStatus.text = "Sudah diambil"
-            holder.tvStatus.backgroundTintList = ContextCompat.getColorStateList(context, R.color.lush_green)
+            holder.tvStatus.text = "Sudah diolah"
+            holder.tvStatus.backgroundTintList = ContextCompat.getColorStateList(context, R.color.forest_green)
 
             holder.btnOlah.visibility = View.GONE
             holder.lineJumlahOlah.visibility = View.VISIBLE
@@ -63,7 +63,7 @@ class RiwayatDetailAdapter(
             holder.tvTanggalDiaolah.text = DateHelper.formatTanggal(riwayat.tanggalOlah)
             holder.tvJumlahCrumbRubber.text = "${riwayat.jumlahMentahOlah} kg"
         } else {
-            holder.tvStatus.text = "Belum diambil"
+            holder.tvStatus.text = "Belum diolah"
             holder.tvStatus.backgroundTintList = ContextCompat.getColorStateList(context, R.color.amber_orange)
 
             holder.divider.visibility = View.GONE

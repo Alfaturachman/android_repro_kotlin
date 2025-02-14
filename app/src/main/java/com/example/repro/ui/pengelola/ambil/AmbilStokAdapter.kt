@@ -78,7 +78,7 @@ class AmbilStokAdapter(
         val dialogView: View = LayoutInflater.from(context).inflate(R.layout.alert_dialog, null)
 
         // AlertDialog dengan custom view dan tema
-        val alertDialog = AlertDialog.Builder(context, R.style.CustomAlertDialogTheme)
+        val alertDialog = AlertDialog.Builder(context, R.style.CustomAlertDialog)
             .setView(dialogView)
             .create()
 
@@ -119,7 +119,7 @@ class AmbilStokAdapter(
     private fun showMapsDialog(ambilStok: getAmbilStok) {
         val dialogView: View = LayoutInflater.from(context).inflate(R.layout.alert_dialog, null)
 
-        val alertDialog = AlertDialog.Builder(context, R.style.CustomAlertDialogTheme)
+        val alertDialog = AlertDialog.Builder(context, R.style.CustomAlertDialog)
             .setView(dialogView)
             .create()
 
