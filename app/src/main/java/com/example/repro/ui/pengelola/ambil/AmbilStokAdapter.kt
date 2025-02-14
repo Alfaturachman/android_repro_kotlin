@@ -63,41 +63,42 @@ class AmbilStokAdapter(
         holder.tvAlamat.text = getAddressFromCoordinates(ambilStok.lokasi) ?: "Alamat tidak ditemukan"
 
         holder.btnAmbilStok.setOnClickListener {
-            showConfirmationDialog(ambilStok)
+            showAmbilDialog(ambilStok)
         }
 
         holder.btnMaps.setOnClickListener {
-            showMapsConfirmationDialog(ambilStok)
+            showMapsDialog(ambilStok)
         }
     }
 
     override fun getItemCount(): Int = getAmbilStokList.size
 
-    private fun showConfirmationDialog(ambilStok: getAmbilStok) {
+    private fun showAmbilDialog(ambilStok: getAmbilStok) {
         // Inflate layout custom dialog
         val dialogView: View = LayoutInflater.from(context).inflate(R.layout.alert_dialog, null)
 
-        // Buat AlertDialog dengan custom view dan tema
-        val alertDialog = AlertDialog.Builder(context, R.style.CustomAlertDialogTheme) // Terapkan tema di sini
+        // AlertDialog dengan custom view dan tema
+        val alertDialog = AlertDialog.Builder(context, R.style.CustomAlertDialogTheme)
             .setView(dialogView)
             .create()
 
-        // Inisialisasi komponen di custom dialog
+        // Inisialisasi custom dialog
         val tvDialogTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
         val tvDialogMessage = dialogView.findViewById<TextView>(R.id.tvDialogMessage)
         val btnTidak = dialogView.findViewById<Button>(R.id.btnTidak)
         val btnYa = dialogView.findViewById<Button>(R.id.btnYa)
 
-        // Set pesan dialog
         tvDialogTitle.text = "Konfirmasi Ambil Stok"
         tvDialogMessage.text = "Apakah Anda yakin ingin mengambil stok dari pemilik ${ambilStok.nama_pemasok}?"
+        btnTidak.text = "Tidak"
+        btnYa.text = "Ya"
 
-        // Handle tombol "Tidak"
+        // Button Tidak
         btnTidak.setOnClickListener {
             alertDialog.dismiss() // Tutup dialog
         }
 
-        // Handle tombol "Ya"
+        // Button Ya
         btnYa.setOnClickListener {
             Toast.makeText(context, "Berhasil mengambil stok dari ${ambilStok.nama_pemasok}", Toast.LENGTH_SHORT).show()
             logAmbilStokData(ambilStok)
@@ -107,7 +108,7 @@ class AmbilStokAdapter(
         // Tampilkan dialog
         alertDialog.show()
 
-        // Atur ukuran dialog agar tidak mepet dengan sisi layar
+        // Ukuran dialog
         val window = alertDialog.window
         window?.setLayout(
             (Resources.getSystem().displayMetrics.widthPixels * 0.90).toInt(),  // 90% dari lebar layar
@@ -115,7 +116,7 @@ class AmbilStokAdapter(
         )
     }
 
-    private fun showMapsConfirmationDialog(ambilStok: getAmbilStok) {
+    private fun showMapsDialog(ambilStok: getAmbilStok) {
         val dialogView: View = LayoutInflater.from(context).inflate(R.layout.alert_dialog, null)
 
         val alertDialog = AlertDialog.Builder(context, R.style.CustomAlertDialogTheme)

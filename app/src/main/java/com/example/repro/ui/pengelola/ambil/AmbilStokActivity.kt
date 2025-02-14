@@ -4,11 +4,16 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -76,7 +81,6 @@ class AmbilStokActivity : AppCompatActivity() {
             return
         }
 
-        // Coba ambil lokasi terakhir
         fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
             if (location != null) {
                 Log.d("GPS_DEBUG", "Lokasi berhasil didapatkan: ${location.latitude}, ${location.longitude}")
@@ -167,14 +171,47 @@ class AmbilStokActivity : AppCompatActivity() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
+    // Fungsi untuk menampilkan dialog kustom
     private fun showGPSDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("GPS Tidak Aktif")
-            .setMessage("GPS harus diaktifkan untuk mendapatkan lokasi.")
-            .setPositiveButton("Aktifkan") { _, _ ->
-                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-            }
-            .setNegativeButton("Batal", null)
-            .show()
+        // Inflate layout custom dialog
+        val dialogView: View = LayoutInflater.from(this).inflate(R.layout.alert_dialog, null)
+
+        // AlertDialog dengan custom view dan tema
+        val alertDialog = AlertDialog.Builder(this, R.style.CustomAlertDialogTheme)
+            .setView(dialogView)
+            .create()
+
+        // Inisialisasi custom dialog
+        val tvDialogTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
+        val tvDialogMessage = dialogView.findViewById<TextView>(R.id.tvDialogMessage)
+        val btnTidak = dialogView.findViewById<Button>(R.id.btnTidak)
+        val btnYa = dialogView.findViewById<Button>(R.id.btnYa)
+
+        tvDialogTitle.text = "GPS Tidak Aktif"
+        tvDialogMessage.text = "GPS harus diaktifkan untuk mendapatkan lokasi."
+        btnTidak.text = "Tidak"
+        btnYa.text = "Aktifkan"
+
+        // Button Tidak
+        btnTidak.setOnClickListener {
+            alertDialog.dismiss() // Tutup dialog
+        }
+
+        // Button Ya
+        btnYa.setOnClickListener {
+            // Buka pengaturan lokasi
+            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            alertDialog.dismiss() // Tutup dialog
+        }
+
+        // Tampilkan dialog
+        alertDialog.show()
+
+        // Ukuran dialog
+        val window = alertDialog.window
+        window?.setLayout(
+            (Resources.getSystem().displayMetrics.widthPixels * 0.90).toInt(),  // 90% dari lebar layar
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
     }
 }
