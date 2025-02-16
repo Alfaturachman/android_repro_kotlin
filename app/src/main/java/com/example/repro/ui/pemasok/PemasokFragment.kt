@@ -90,7 +90,11 @@ class PemasokFragment : Fragment() {
                             binding.cardViewPeringatan.visibility = View.GONE
                             recyclerView.visibility = View.VISIBLE
 
-                            adapter = StokAdapter(stokList)
+                            adapter = StokAdapter(stokList, startForResult) {
+                                refreshData() // Panggil refreshData() saat data dihapus
+                            }
+
+                            recyclerView.adapter = adapter
                             recyclerView.adapter = adapter
                         } else {
                             // Jika tidak ada stok, tampilkan cardViewPeringatan

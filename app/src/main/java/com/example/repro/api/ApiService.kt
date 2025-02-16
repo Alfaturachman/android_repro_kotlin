@@ -3,6 +3,7 @@ package com.example.repro.api
 import com.example.repro.model.HargaBanResponse
 import com.example.repro.model.postHargaBan
 import com.example.repro.model.Ambil
+import com.example.repro.model.DeleteStok
 import com.example.repro.model.HargaKendaraan
 import com.example.repro.model.OlahRequest
 import com.example.repro.model.OlahResponse
@@ -74,4 +75,8 @@ interface ApiService {
 
     @POST("post_status_stok.php")
     fun simpanStok(@Body request: StokRequest): Call<ApiResponse<StokRequest>>
+
+    @Headers("Content-Type: application/json")
+    @POST("delete_user.php")
+    fun deleteStok(@Body request: DeleteStok): Call<ApiResponse<DeleteStok>>
 }
