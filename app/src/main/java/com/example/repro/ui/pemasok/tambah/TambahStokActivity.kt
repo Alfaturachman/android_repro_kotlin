@@ -5,6 +5,8 @@ import android.content.pm.PackageManager
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.content.res.Resources
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -23,10 +25,16 @@ import java.util.Date
 import java.util.Locale
 import android.os.Handler
 import android.text.TextUtils
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
 import androidx.core.widget.doAfterTextChanged
 import com.example.repro.api.ApiResponse
+import com.example.repro.api.ApiService
 import com.example.repro.api.RetrofitClient
 import com.example.repro.model.HargaKendaraan
+import com.example.repro.model.StokRequest
+import com.example.repro.model.UpdateHargaBanRequest
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -40,6 +48,7 @@ class TambahStokActivity : AppCompatActivity() {
     private var latitude: Double? = null
     private var longitude: Double? = null
     private var hargaKendaraanMap = mutableMapOf<String, String>() // Map untuk menyimpan harga kendaraan
+    private var pemasokId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +74,9 @@ class TambahStokActivity : AppCompatActivity() {
             }
         }
         handler.post(runnable)
+
+        val sharedPreferences: SharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
+        pemasokId = sharedPreferences.getInt("id_user", -1)
 
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
@@ -126,25 +138,45 @@ class TambahStokActivity : AppCompatActivity() {
                 else -> ""
             }
 
+            // Validasi input
             if (TextUtils.isEmpty(jumlahStok) ||
                 TextUtils.isEmpty(hargaPerKg) ||
                 TextUtils.isEmpty(totalHarga) ||
-                TextUtils.isEmpty(selectedJenis)) {
-
+                TextUtils.isEmpty(selectedJenis)
+            ) {
                 Toast.makeText(this, "Harap isi semua data sebelum menyimpan!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val tanggal = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale("id", "ID")).format(Date())
+            // Buat request object
+            val stokRequest = StokRequest(
+                idPemasok = pemasokId,
+                jenis = selectedJenis,
+                jumlahStok = jumlahStok.toInt(),
+                harga = hargaPerKg.toDouble(),
+                totalHarga = totalHarga.toDouble(),
+                lokasi = "$latitude,$longitude"
+            )
 
-            Log.d("TambahStokActivity", "Tanggal: $tanggal")
-            Log.d("TambahStokActivity", "Jenis Kendaraan: $selectedJenis")
-            Log.d("TambahStokActivity", "Jumlah Stok: $jumlahStok")
-            Log.d("TambahStokActivity", "Harga per kg: $hargaPerKg")
-            Log.d("TambahStokActivity", "Total Harga: $totalHarga")
-            Log.d("TambahStokActivity", "Koordinat: $latitude, $longitude")
+            // Panggil API
+            RetrofitClient.instance.simpanStok(stokRequest).enqueue(object : Callback<ApiResponse<StokRequest>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<StokRequest>>,
+                    response: Response<ApiResponse<StokRequest>>
+                ) {
+                    if (response.isSuccessful && response.body()?.status == true) {
+                        Toast.makeText(this@TambahStokActivity, "Data Berhasil Disimpan", Toast.LENGTH_SHORT).show()
+                        setResult(RESULT_OK)
+                        finish()
+                    } else {
+                        Toast.makeText(this@TambahStokActivity, "Gagal menyimpan data: ${response.message()}", Toast.LENGTH_SHORT).show()
+                    }
+                }
 
-            Toast.makeText(this, "Data Berhasil Disimpan", Toast.LENGTH_SHORT).show()
+                override fun onFailure(call: Call<ApiResponse<StokRequest>>, t: Throwable) {
+                    Toast.makeText(this@TambahStokActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
         }
     }
 
@@ -168,27 +200,57 @@ class TambahStokActivity : AppCompatActivity() {
         })
     }
 
-    private fun updateTotalHarga(etJumlahStok: EditText, etHargaPerKg: EditText, etTotalHarga: EditText) {
-        val jumlah = etJumlahStok.text.toString().toDoubleOrNull() ?: 0.0
-        val hargaPerKg = etHargaPerKg.text.toString().toDoubleOrNull() ?: 0.0
-        val total = jumlah * hargaPerKg
-        etTotalHarga.setText(total.toString())
-    }
-
     private fun isGPSEnabled(): Boolean {
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
     private fun showGPSDialog() {
-        AlertDialog.Builder(this)
-            .setTitle("GPS Tidak Aktif")
-            .setMessage("GPS harus diaktifkan untuk mendapatkan lokasi.")
-            .setPositiveButton("Aktifkan") { _, _ ->
-                startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-            }
-            .setNegativeButton("Batal", null)
-            .show()
+        // Inflate layout custom dialog
+        val dialogView: View = LayoutInflater.from(this).inflate(R.layout.alert_dialog, null)
+
+        // AlertDialog dengan custom view dan tema
+        val alertDialog = AlertDialog.Builder(this, R.style.CustomAlertDialog)
+            .setView(dialogView)
+            .create()
+
+        // Inisialisasi custom dialog
+        val tvDialogTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
+        val tvDialogMessage = dialogView.findViewById<TextView>(R.id.tvDialogMessage)
+        val btnTidak = dialogView.findViewById<Button>(R.id.btnTidak)
+        val btnYa = dialogView.findViewById<Button>(R.id.btnYa)
+
+        tvDialogTitle.text = "GPS Tidak Aktif"
+        tvDialogMessage.text = "GPS harus diaktifkan untuk mendapatkan lokasi."
+        btnTidak.text = "Tidak"
+        btnYa.text = "Aktifkan"
+
+        // Button Tidak
+        btnTidak.setOnClickListener {
+            finish() // Tutup aplikasi
+        }
+
+        // Button Ya
+        btnYa.setOnClickListener {
+            // Buka pengaturan lokasi
+            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            alertDialog.dismiss() // Tutup dialog
+        }
+
+        // Jika dialog di-dismiss (diklik di luar atau tombol back)
+        alertDialog.setOnDismissListener {
+            finish() // Tutup aplikasi
+        }
+
+        // Tampilkan dialog
+        alertDialog.show()
+
+        // Ukuran dialog
+        val window = alertDialog.window
+        window?.setLayout(
+            (Resources.getSystem().displayMetrics.widthPixels * 0.90).toInt(),  // 90% dari lebar layar
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
     }
 
     @SuppressLint("MissingPermission")
@@ -229,7 +291,7 @@ class TambahStokActivity : AppCompatActivity() {
 
     fun formatRupiah(value: Double): String {
         val formatter = NumberFormat.getCurrencyInstance(Locale("id", "ID"))
-        return formatter.format(value).replace(",00", "") // Hapus desimal jika tidak diperlukan
+        return formatter.format(value).replace(",00", "")
     }
 
     fun parseRupiahToInt(rupiah: String): Int {

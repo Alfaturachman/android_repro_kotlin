@@ -1,6 +1,7 @@
 package com.example.repro.ui.home
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.webkit.WebView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -29,6 +31,7 @@ import retrofit2.Response
 import java.util.HashMap
 
 class HomeFragment : Fragment() {
+    private lateinit var tvNama: TextView
     private lateinit var pemasokTotalBelumAmbil: TextView
     private lateinit var pemasokTotalSudahAmbil: TextView
     private lateinit var laporanDataPemasok: LineChart
@@ -36,7 +39,6 @@ class HomeFragment : Fragment() {
     private lateinit var CardViewPemasokTotalSudahDiambil: CardView
     private lateinit var CardViewPengelolaTotalBanBekas: CardView
     private lateinit var CardViewPengelolaTotalSudahDiolah: CardView
-    private lateinit var webView: WebView
     private var binding: FragmentHomeBinding? = null
 
     override fun onCreateView(
@@ -57,17 +59,22 @@ class HomeFragment : Fragment() {
         CardViewPengelolaTotalSudahDiolah = binding?.CardViewPengelolaTotalSudahDiolah!!
 
         // TextView binding
+        tvNama = binding?.tvNama!!
         pemasokTotalBelumAmbil = binding?.pemasokTotalBelumAmbil!!
         pemasokTotalSudahAmbil = binding?.pemasokTotalSudahAmbil!!
 
         // Mengambil BarChart dari binding
         laporanDataPemasok = binding?.laporanDataPemasok!!
 
-        // ID User SharedPreferences
+        // Nama dari SharedPreferences
+        val namaUser = getNamaFromSharedPreferences()
+        tvNama.text = namaUser
+
+        // ID User dari SharedPreferences
         val pemasokId = getPemasokIdFromSharedPreferences()
         pemasokDataTotal(pemasokId)
 
-        // CardView berdasarkan level SharedPreferences
+        // Level dari SharedPreferences
         val level = getLevelFromSharedPreferences()
         when (level) {
             "pemasok" -> {
@@ -94,6 +101,11 @@ class HomeFragment : Fragment() {
     private fun getPemasokIdFromSharedPreferences(): Int {
         val sharedPreferences = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         return sharedPreferences.getInt("id_user", -1)
+    }
+
+    private fun getNamaFromSharedPreferences(): String? {
+        val sharedPreferences = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("nama", "0")
     }
 
     private fun getLevelFromSharedPreferences(): String? {

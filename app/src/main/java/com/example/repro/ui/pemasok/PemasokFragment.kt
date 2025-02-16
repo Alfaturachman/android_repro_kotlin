@@ -1,5 +1,6 @@
 package com.example.repro.ui.pemasok
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,9 +28,16 @@ class PemasokFragment : Fragment() {
     private val viewModel: PemasokViewModel by viewModels()
     private var _binding: FragmentPemasokBinding? = null
     private val binding get() = _binding!!
-
+    private var pemasokId: Int = -1
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: StokAdapter
+
+    // ActivityResultLauncher
+    val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            refreshData()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +50,7 @@ class PemasokFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         // ID dari SharedPreferences
-        val pemasokId = getPemasokIdFromSharedPreferences()
+        pemasokId = getPemasokIdFromSharedPreferences()
         if (pemasokId != -1) {
             getStokData(pemasokId)
         } else {
@@ -51,7 +60,7 @@ class PemasokFragment : Fragment() {
         // Tombol tambah stok
         binding.btnTambahStok.setOnClickListener {
             val intent = Intent(requireContext(), TambahStokActivity::class.java)
-            startActivity(intent)
+            startForResult.launch(intent)
         }
 
         return root
@@ -107,6 +116,10 @@ class PemasokFragment : Fragment() {
                 recyclerView.visibility = View.GONE
             }
         })
+    }
+
+    private fun refreshData() {
+        getStokData(pemasokId)
     }
 
     override fun onDestroyView() {

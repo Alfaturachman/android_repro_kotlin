@@ -7,6 +7,7 @@ import com.example.repro.model.HargaKendaraan
 import com.example.repro.model.OlahRequest
 import com.example.repro.model.OlahResponse
 import com.example.repro.model.RiwayatPemasokResponse
+import com.example.repro.model.StokRequest
 import com.example.repro.model.UpdateHargaBanRequest
 import com.example.repro.model.getPemasok
 import com.example.repro.model.getStokByPemasokId
@@ -70,4 +71,7 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     @POST("post_olah.php")
     fun simpanOlah(@Body request: OlahRequest): Call<ApiResponse<OlahResponse>>
+
+    @POST("post_status_stok.php")
+    fun simpanStok(@Body request: StokRequest): Call<ApiResponse<StokRequest>>
 }
