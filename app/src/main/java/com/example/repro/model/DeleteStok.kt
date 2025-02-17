@@ -1,5 +1,7 @@
 package com.example.repro.model
 
-data class DeleteStok (
-    val id_stok: Int
+import com.google.gson.annotations.SerializedName
+
+data class DeleteStok(
+    @SerializedName("id_stok") val idStok: Int
 )

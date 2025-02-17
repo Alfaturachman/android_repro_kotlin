@@ -23,6 +23,7 @@ import com.example.repro.api.RetrofitClient
 import com.example.repro.helper.DateHelper
 import com.example.repro.model.DeleteStok
 import com.example.repro.model.getStokByPemasokId
+import com.example.repro.ui.pemasok.detail.DetailStokActivity
 import com.example.repro.ui.pemasok.edit.EditStokActivity
 import retrofit2.Call
 import retrofit2.Callback
@@ -42,7 +43,7 @@ class StokAdapter(
         val tvTotalBerat: TextView = itemView.findViewById(R.id.tvTotalBerat)
         val tvHargaPerKg: TextView = itemView.findViewById(R.id.tvHargaPerKg)
         val tvTotalHarga: TextView = itemView.findViewById(R.id.tvTotalHarga)
-        val btnEditStok: ImageView = itemView.findViewById(R.id.btnEditStok)
+        val btnDetailStok: ImageView = itemView.findViewById(R.id.btnDetailStok)
         val btnHapusStok: ImageView = itemView.findViewById(R.id.btnHapusStok)
     }
 
@@ -65,12 +66,12 @@ class StokAdapter(
 
         if (stok.status == "Sudah diambil") {
             holder.tvStatus.backgroundTintList = ContextCompat.getColorStateList(context, R.color.forest_green)
-            holder.btnEditStok.visibility = View.GONE
+            holder.btnDetailStok.visibility = View.GONE
             holder.btnHapusStok.visibility = View.GONE
         } else if (stok.status == "Belum diambil") {
             holder.tvStatus.backgroundTintList = ContextCompat.getColorStateList(context, R.color.amber_orange)
             // Handle button edit
-            holder.btnEditStok.setOnClickListener {
+            holder.btnDetailStok.setOnClickListener {
                 handleButtonEditClick(stok, context)
             }
 
@@ -85,10 +86,18 @@ class StokAdapter(
         return stokList.size
     }
 
-    // Button Edit
     private fun handleButtonEditClick(stok: getStokByPemasokId, context: Context) {
-        val intent = Intent(context, EditStokActivity::class.java).apply {
+        Log.d("DetailStokActivity", "Sending data: id_user=${stok.id}, tanggal=${stok.tanggal}, jenis_ban=${stok.jenis}, " +
+                "jumlah_stok=${stok.jumlah_stok}, harga_ban=${stok.harga}, total_harga_ban=${stok.total_harga}, lokasi=${stok.lokasi}")
+
+        val intent = Intent(context, DetailStokActivity::class.java).apply {
             putExtra("id_user", stok.id)
+            putExtra("tanggal", stok.tanggal)
+            putExtra("jenis_ban", stok.jenis)
+            putExtra("jumlah_stok", stok.jumlah_stok.toFloat())
+            putExtra("harga_ban", stok.harga.toFloat())
+            putExtra("total_harga_ban", stok.total_harga.toFloat())
+            putExtra("lokasi", stok.lokasi)
         }
         startForResult.launch(intent)
     }

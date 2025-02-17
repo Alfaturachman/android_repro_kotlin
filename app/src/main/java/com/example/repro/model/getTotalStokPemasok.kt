@@ -12,4 +12,3 @@ data class PemasokStokPerBulan(
     @SerializedName("bulan") val bulan: Int,
     @SerializedName("total_stok") val totalStok: Float
 )
-

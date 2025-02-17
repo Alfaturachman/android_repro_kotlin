@@ -19,6 +19,7 @@ import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.POST
@@ -76,7 +77,8 @@ interface ApiService {
     @POST("post_status_stok.php")
     fun simpanStok(@Body request: StokRequest): Call<ApiResponse<StokRequest>>
 
+    // DELETE
     @Headers("Content-Type: application/json")
-    @POST("delete_user.php")
+    @POST("delete_stok.php")
     fun deleteStok(@Body request: DeleteStok): Call<ApiResponse<DeleteStok>>
 }
