@@ -26,8 +26,8 @@ class PemasokAdapter(
         val pemasok = getPemasokList[position]
         holder.tvNamaPemasok.text = pemasok.nama
         holder.tvNamaUsaha.text = pemasok.namaUsaha
-        holder.tvNoHp.text = "Nomor HP: ${pemasok.noHp}"
-        holder.tvAlamat.text = "Alamat: ${pemasok.alamat}"
+        holder.tvNoHp.text = "${pemasok.noHp}"
+        holder.tvAlamat.text = "${pemasok.alamat}"
     }
 
     override fun getItemCount(): Int = getPemasokList.size

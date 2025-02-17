@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/nav_harga_ban"
-        android:name="com.example.repro.ui.harga_ban.HargaBanFragment"
+        android:name="com.example.repro.ui.pengelola.harga_ban.HargaBanFragment"
         android:label="@string/menu_harga_ban"
         tools:layout="@layout/fragment_harga_ban" />
 

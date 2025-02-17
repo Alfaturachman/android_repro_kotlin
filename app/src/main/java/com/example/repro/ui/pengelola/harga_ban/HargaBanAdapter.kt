@@ -1,5 +1,6 @@
-package com.example.repro.ui.harga_ban
+package com.example.repro.ui.pengelola.harga_ban
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,11 +37,12 @@ class HargaBanAdapter(
             groupingSeparator = '.'
         }
         val formatter = DecimalFormat("#,###", symbols)
-        val formattedHarga = formatter.format(hargaBan.harga)
+        val formattedHarga = formatter.format(hargaBan.harga.toDouble()) // Pastikan harga adalah numerik
 
-        holder.tvJenisBan.text = hargaBan.jenis
+        // Set data ke view
+        holder.tvJenisBan.text = "Jenis Ban: ${hargaBan.jenis}" // Gunakan ${} untuk string template
         holder.tvHarga.text = "Rp $formattedHarga"
-        holder.tvTanggal.text = hargaBan.ins_time
+        holder.tvTanggal.text = "Tanggal: ${hargaBan.ins_time}" // Gunakan ${} untuk string template
 
         // Handle klik tombol edit
         holder.btnEditHargaBan.setOnClickListener {

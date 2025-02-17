@@ -18,6 +18,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.success.SuccessActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.pemasok.edit.EditStokActivity"
             android:exported="false" />
         <activity
@@ -51,11 +54,11 @@
             android:name=".ui.pengelola.riwayat_detail.RiwayatDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.harga_ban.tambah.TambahHargaActivity"
+            android:name=".ui.pengelola.harga_ban.tambah.TambahHargaActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".ui.harga_ban.edit.EditHargaActivity"
+            android:name=".ui.pengelola.harga_ban.edit.EditHargaActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity

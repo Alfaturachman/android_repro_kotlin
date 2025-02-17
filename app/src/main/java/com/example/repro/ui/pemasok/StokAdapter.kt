@@ -1,5 +1,6 @@
 package com.example.repro.ui.pemasok
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
@@ -50,13 +51,14 @@ class StokAdapter(
         return StokViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: StokViewHolder, position: Int) {
         val stok = stokList[position]
         val context = holder.itemView.context
         val formatRupiah = NumberFormat.getNumberInstance(Locale("id", "ID"))
 
         holder.tvJenis.text = "Jenis Ban: ${stok.jenis}"
-        holder.tvStatus.text = "${stok.status}"
+        holder.tvStatus.text = stok.status
         holder.tvTotalBerat.text = "${stok.jumlah_stok} kg"
         holder.tvHargaPerKg.text = "Rp ${formatRupiah.format(stok.harga)}"
         holder.tvTotalHarga.text = "Rp ${formatRupiah.format(stok.total_harga)}"
@@ -92,6 +94,7 @@ class StokAdapter(
     }
 
     // Button Hapus
+    @SuppressLint("SetTextI18n")
     private fun handleButtonHapus(stok: getStokByPemasokId, context: Context) {
         // Inflate layout custom dialog
         val dialogView: View = LayoutInflater.from(context).inflate(R.layout.alert_dialog, null)

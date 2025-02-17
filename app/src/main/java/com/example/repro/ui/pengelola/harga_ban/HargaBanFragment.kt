@@ -1,4 +1,4 @@
-package com.example.repro.ui.harga_ban
+package com.example.repro.ui.pengelola.harga_ban
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
@@ -13,7 +13,7 @@ import com.example.repro.api.ApiResponse
 import com.example.repro.api.RetrofitClient
 import com.example.repro.databinding.FragmentHargaBanBinding
 import com.example.repro.model.postHargaBan
-import com.example.repro.ui.harga_ban.edit.EditHargaActivity
+import com.example.repro.ui.pengelola.harga_ban.edit.EditHargaActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
