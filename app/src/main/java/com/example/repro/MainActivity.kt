@@ -54,6 +54,8 @@ class MainActivity : AppCompatActivity() {
         val navView: NavigationView = mainBinding.navView
         val navController = findNavController(R.id.nav_host_fragment_content_main)
 
+        setupMenu(navView.menu, userLevel)
+
         // Konfigurasi AppBar
         appBarConfiguration = AppBarConfiguration(
             setOf(
@@ -71,6 +73,21 @@ class MainActivity : AppCompatActivity() {
         navHeaderBinding.imageView.setImageResource(R.mipmap.ic_launcher_round)
         navHeaderBinding.tvNavNama.text = userNama
         navHeaderBinding.tvNavEmail.text = userLevel
+    }
+
+    private fun setupMenu(menu: Menu, userLevel: String?) {
+        // Sembunyikan semua menu terlebih dahulu
+        menu.findItem(R.id.nav_pengelola)?.isVisible = false
+        menu.findItem(R.id.nav_pemasok)?.isVisible = false
+        menu.findItem(R.id.nav_harga_ban)?.isVisible = false
+
+        // Tampilkan menu sesuai dengan role
+        when (userLevel) {
+            "pengelola" ->
+                menu.findItem(R.id.nav_pengelola)?.isVisible = true
+            "pemasok" ->
+                menu.findItem(R.id.nav_pemasok)?.isVisible = true
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
