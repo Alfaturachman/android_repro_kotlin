@@ -22,8 +22,10 @@
 
     <color name="forest_green_50">#f1fcf6</color>
     <color name="forest_green_100">#e0f8e9</color>
+    <color name="forest_green_400">#5bcd89</color>
     <color name="forest_green_500">#34b369</color>
     <color name="forest_green">#279856</color>
+    <color name="forest_green_700">#217444</color>
 
     <color name="yellow_100">#fcf2c9</color>
     <color name="yellow">#fbb41a</color>
