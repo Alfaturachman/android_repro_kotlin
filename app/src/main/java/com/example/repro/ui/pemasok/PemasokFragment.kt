@@ -98,7 +98,7 @@ class PemasokFragment : Fragment() {
 
     private fun getPemasokIdFromSharedPreferences(): Int {
         val sharedPreferences = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-        return sharedPreferences.getInt("id_user", -1)
+        return sharedPreferences.getInt("id_user_detail", -1)
     }
 
     private fun getStokData(pemasokId: Int) {

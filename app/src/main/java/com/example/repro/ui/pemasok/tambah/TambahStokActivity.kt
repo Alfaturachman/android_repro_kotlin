@@ -76,7 +76,7 @@ class TambahStokActivity : AppCompatActivity() {
         handler.post(runnable)
 
         val sharedPreferences: SharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
-        pemasokId = sharedPreferences.getInt("id_user", -1)
+        pemasokId = sharedPreferences.getInt("id_user_detail", -1)
 
         if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)

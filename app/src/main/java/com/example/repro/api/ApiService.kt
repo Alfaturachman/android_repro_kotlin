@@ -9,6 +9,7 @@ import com.example.repro.model.OlahRequest
 import com.example.repro.model.OlahResponse
 import com.example.repro.model.RiwayatPemasokResponse
 import com.example.repro.model.StatsTotalPemasok
+import com.example.repro.model.StatsTotalPengelola
 import com.example.repro.model.StokRequest
 import com.example.repro.model.UpdateHargaBanRequest
 import com.example.repro.model.getPemasok
@@ -39,9 +40,6 @@ interface ApiService {
     @GET("get_harga_ban.php")
     fun getHargaKendaraan(): Call<ApiResponse<List<HargaKendaraan>>>
 
-    @GET("get_ambil.php")
-    fun getAmbil(): Call<List<Ambil>>
-
     // POST
     @POST("login.php")
     fun loginUser(@Body body: RequestBody): Call<ResponseBody>
@@ -57,6 +55,8 @@ interface ApiService {
     @POST("get_status_stok.php")
     fun getStokByPemasokId(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<List<getStokByPemasokId>>>
 
+    // Home
+    // Pemasok
     @Headers("Content-Type: application/json")
     @POST("get_total_pemasok.php")
     fun getTotalStokPemasok(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<getTotalStokPemasok>>
@@ -64,6 +64,15 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     @POST("get_stats_pemasok.php")
     fun getStatsPemasok(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<List<StatsTotalPemasok>>>
+
+    // Pengelola
+    @Headers("Content-Type: application/json")
+    @POST("get_stats_pengelola.php")
+    fun getStatsPengelola(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<List<StatsTotalPengelola>>>
+
+    @Headers("Content-Type: application/json")
+    @POST("get_total_pengelola.php")
+    fun getTotalStokPengelola(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<getTotalStokPemasok>>
 
     @Headers("Content-Type: application/json")
     @POST("post_harga_ban.php")
