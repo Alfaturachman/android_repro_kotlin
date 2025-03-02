@@ -37,13 +37,6 @@ class MainActivity : AppCompatActivity() {
         // Set toolbar
         setSupportActionBar(mainBinding.appBarMain.toolbar)
 
-        // Floating Action Button (FAB) action
-        mainBinding.appBarMain.fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null)
-                .setAnchorView(R.id.fab).show()
-        }
-
         // Check SharedPreferences
         val sharedPreferences: SharedPreferences = getSharedPreferences("UserSession", MODE_PRIVATE)
         val userLevel = sharedPreferences.getString("level", null)
@@ -81,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         menu.findItem(R.id.nav_pemasok)?.isVisible = false
         menu.findItem(R.id.nav_harga_ban)?.isVisible = false
 
-        // Tampilkan menu sesuai dengan role
+        // Menu sesuai dengan role
         when (userLevel) {
             "pengelola" ->
                 menu.findItem(R.id.nav_pengelola)?.isVisible = true

@@ -22,10 +22,13 @@
 
     <color name="forest_green_50">#f1fcf6</color>
     <color name="forest_green_100">#e0f8e9</color>
+    <color name="forest_green_200">#c2f0d4</color>
+    <color name="forest_green_300">#92e3b3</color>
     <color name="forest_green_400">#5bcd89</color>
     <color name="forest_green_500">#34b369</color>
     <color name="forest_green">#279856</color>
     <color name="forest_green_700">#217444</color>
+    <color name="forest_green_800">#1f5c39</color>
 
     <color name="yellow_100">#fcf2c9</color>
     <color name="yellow">#fbb41a</color>
@@ -51,7 +54,7 @@
 
     <!-- Badges color -->
     <color name="badge_primary">#0d6efd</color>
-    <color name="badge_success">#198754</color>
+    <color name="badge_success">#19a061</color>
     <color name="badge_danger">#dc3545</color>
     <color name="badge_warning">#ffc107</color>
     <color name="badge_info">#0dcaf0</color>

@@ -1,5 +1,6 @@
 package com.example.repro.ui.pemasok.detail
 
+import android.annotation.SuppressLint
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.repro.R
 import com.example.repro.helpers.DateHelper
 import com.example.repro.helpers.RupiahHelper
@@ -16,7 +18,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import java.text.NumberFormat
 import java.util.Locale
 
 class DetailStokActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -25,6 +26,7 @@ class DetailStokActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var googleMap: GoogleMap
     private var lokasi: String = "0"
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -41,6 +43,7 @@ class DetailStokActivity : AppCompatActivity(), OnMapReadyCallback {
         // Inisialisasi TextView
         val tvTanggal = findViewById<TextView>(R.id.tvTanggal)
         val tvJenis = findViewById<TextView>(R.id.tvJenis)
+        val tvStatus = findViewById<TextView>(R.id.tvStatus)
         val tvJumlahStok = findViewById<TextView>(R.id.tvJumlahStok)
         val tvHargaPerKg = findViewById<TextView>(R.id.tvHargaPerKg)
         val tvTotalHarga = findViewById<TextView>(R.id.tvTotalHarga)
@@ -48,20 +51,21 @@ class DetailStokActivity : AppCompatActivity(), OnMapReadyCallback {
 
         // Ambil data dari Intent
         val tanggal = intent.getStringExtra("tanggal") ?: "Tidak Ada Data"
-        val jenis = intent.getStringExtra("jenis") ?: "Tidak Ada Data"
+        val jenis = intent.getStringExtra("jenis_ban") ?: "Tidak Ada Data"
+        val status = intent.getStringExtra("status") ?: "Tidak Ada Data"
         lokasi = intent.getStringExtra("lokasi") ?: "Tidak Ada Data"
         val jumlahStok = intent.getFloatExtra("jumlah_stok", -1f).toDouble()
         val hargaPerKg = intent.getFloatExtra("harga_ban", -1f).toDouble()
         val totalHargaBan = intent.getFloatExtra("total_harga_ban", -1f).toDouble()
 
-        // Log data yang diambil dari Intent
-        Log.d("DetailStokActivity", "Tanggal: $tanggal")
-        Log.d("DetailStokActivity", "Jenis: $jenis")
-        Log.d("DetailStokActivity", "Jumlah Stok: $jumlahStok")
-        Log.d("DetailStokActivity", "Harga Per Kg: $hargaPerKg")
-        Log.d("DetailStokActivity", "Total Harga: $totalHargaBan")
+        tvStatus.text = status
+        if (status == "Sudah diambil") {
+            tvStatus.backgroundTintList = ContextCompat.getColorStateList(this, R.color.forest_green)
+        } else if (status == "Belum diambil") {
+            tvStatus.backgroundTintList =
+                ContextCompat.getColorStateList(this, R.color.amber_orange)
+        }
 
-        // Set nilai ke TextView dengan format Rupiah
         tvTanggal.text = DateHelper.formatTanggal(tanggal)
         tvJenis.text = jenis
         tvJumlahStok.text = "$jumlahStok kg"

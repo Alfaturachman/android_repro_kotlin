@@ -1,40 +1,43 @@
 package com.example.repro.ui.home
 
+import android.R
 import android.content.Context
-import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.repro.api.RetrofitClient
 import com.example.repro.api.ApiResponse
-import com.github.mikephil.charting.utils.ColorTemplate
+import com.example.repro.api.RetrofitClient
 import com.example.repro.databinding.FragmentHomeBinding
+import com.example.repro.model.StatsTotalPemasok
 import com.example.repro.model.getTotalStokPemasok
+import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.HashMap
 
 class HomeFragment : Fragment() {
     private lateinit var tvNama: TextView
     private lateinit var pemasokTotalBelumAmbil: TextView
     private lateinit var pemasokTotalSudahAmbil: TextView
-    private lateinit var laporanDataPemasok: LineChart
+    private lateinit var laporanDataPemasok: BarChart
     private lateinit var CardViewPemasokTotalBelumDiambil: CardView
     private lateinit var CardViewPemasokTotalSudahDiambil: CardView
     private lateinit var CardViewPengelolaTotalBanBekas: CardView
@@ -119,81 +122,96 @@ class HomeFragment : Fragment() {
         requestBody["user_id"] = userId
 
         // Panggil API
-        val call = RetrofitClient.instance.getTotalStokPemasok(requestBody)
-        call.enqueue(object : Callback<ApiResponse<getTotalStokPemasok>> {
-            override fun onResponse(call: Call<ApiResponse<getTotalStokPemasok>>, response: Response<ApiResponse<getTotalStokPemasok>>) {
+        val call = RetrofitClient.instance.getStatsPemasok(requestBody)
+        call.enqueue(object : Callback<ApiResponse<List<StatsTotalPemasok>>> {
+            override fun onResponse(
+                call: Call<ApiResponse<List<StatsTotalPemasok>>>,
+                response: Response<ApiResponse<List<StatsTotalPemasok>>>
+            ) {
                 if (response.isSuccessful && response.body() != null) {
                     val apiResponse = response.body()!!
-
-                    // Log keseluruhan response
                     Log.d("API_RESPONSE", apiResponse.toString())
 
-                    val stokData = apiResponse.data
+                    val stokDataList = apiResponse.data
 
-                    // Log data stok
-                    Log.d("STOK_DATA", "belumDiambil: ${stokData.belumDiambil}, sudahDiambil: ${stokData.sudahDiambil}")
+                    // Siapkan struktur data
+                    val stokBelumDiambil = FloatArray(12) { 0f } // Stok belum diambil per bulan
+                    val stokSudahDiambil = FloatArray(12) { 0f } // Stok sudah diambil per bulan
 
-                    pemasokTotalBelumAmbil.text = "${stokData.belumDiambil}"
-                    pemasokTotalSudahAmbil.text = "${stokData.sudahDiambil}"
-
-                    // Siapkan data untuk BarChart
-                    val entries = ArrayList<Entry>()
-
-                    // Buat array untuk 12 bulan
-                    val stokPerBulan = FloatArray(12) { 0f } // Inisialisasi dengan nilai 0
-
-                    // Isi array dengan data dari API
-                    for (stok in stokData.pemasokStokPerBulan) {
-                        val bulanIndex = stok.bulan - 1 // Konversi bulan (1-12) ke index (0-11)
+                    // Gabungkan data stok berdasarkan bulan
+                    for (stokData in stokDataList) {
+                        val bulanIndex = stokData.bulan - 1 // Konversi bulan (1-12) ke index (0-11)
                         if (bulanIndex in 0..11) {
-                            stokPerBulan[bulanIndex] = stok.totalStok
+                            stokBelumDiambil[bulanIndex] += stokData.totalStokBelumDiambil.toFloat()
+                            stokSudahDiambil[bulanIndex] += stokData.totalStokSudahDiambil.toFloat()
                         }
                     }
 
-                    // Tambahkan data ke entries
+                    // Buat data untuk BarChart
+                    val entriesBelumDiambil = mutableListOf<BarEntry>()
+                    val entriesSudahDiambil = mutableListOf<BarEntry>()
+
                     for (i in 0 until 12) {
-                        entries.add(Entry(i.toFloat() + 1, stokPerBulan[i])) // Bulan dimulai dari 1
+                        entriesBelumDiambil.add(BarEntry(i.toFloat(), stokBelumDiambil[i]))
+                        entriesSudahDiambil.add(BarEntry(i.toFloat(), stokSudahDiambil[i]))
                     }
 
                     // Set data set untuk BarChart
-                    val dataSet = LineDataSet(entries, "Stok per Bulan") // Label untuk dataset
-                    dataSet.colors = ColorTemplate.MATERIAL_COLORS.toList()
+                    val dataSetBelumDiambil = BarDataSet(entriesBelumDiambil, "Stok Belum Diambil").apply {
+                        color = Color.BLUE
+                        valueTextColor = Color.BLACK
+                    }
 
-                    // Buat BarData
-                    val lineData = LineData(dataSet)
+                    val dataSetSudahDiambil = BarDataSet(entriesSudahDiambil, "Stok Sudah Diambil").apply {
+                        color = Color.RED
+                        valueTextColor = Color.BLACK
+                    }
+
+                    // Buat BarData untuk chart
+                    val barData = BarData(dataSetBelumDiambil, dataSetSudahDiambil)
+                    barData.barWidth = 0.5f // Lebar bar
 
                     // Set data ke chart
-                    laporanDataPemasok.data = lineData
+                    binding?.laporanDataPemasok?.data = barData
 
-                    // Atur sumbu X (bulan)
+                    // Konfigurasi sumbu X
                     val bulanLabels = arrayOf(
                         "Jan", "Feb", "Mar", "Apr", "Mei", "Jun",
                         "Jul", "Agu", "Sep", "Okt", "Nov", "Des"
                     )
-                    val xAxis = laporanDataPemasok.xAxis
-                    xAxis.valueFormatter = IndexAxisValueFormatter(bulanLabels)
-                    xAxis.position = XAxis.XAxisPosition.BOTTOM
-                    xAxis.granularity = 1f
-                    xAxis.setDrawGridLines(false)
+                    binding?.laporanDataPemasok?.xAxis?.apply {
+                        valueFormatter = IndexAxisValueFormatter(bulanLabels)
+                        position = XAxis.XAxisPosition.BOTTOM
+                        granularity = 1f
+                        setDrawGridLines(false)
+                    }
 
-                    // Atur legenda
-                    laporanDataPemasok.legend.isEnabled = true // Aktifkan legenda
-                    laporanDataPemasok.legend.textColor = android.graphics.Color.BLACK // Warna teks legenda
+                    // Konfigurasi sumbu Y
+                    binding?.laporanDataPemasok?.axisLeft?.apply {
+                        axisMinimum = 0f
+                        granularity = 1f
+                    }
+                    binding?.laporanDataPemasok?.axisRight?.isEnabled = false
+
+                    // Konfigurasi legenda
+                    binding?.laporanDataPemasok?.legend?.apply {
+                        isEnabled = true
+                        textColor = Color.BLACK
+                    }
 
                     // Menampilkan chart
-                    laporanDataPemasok.invalidate()
+                    binding?.laporanDataPemasok?.invalidate()
                 } else {
-                    // Log error jika response tidak sesuai
                     Log.e("API_ERROR", "Response error: ${response.errorBody()?.string()}")
                 }
             }
 
-            override fun onFailure(call: Call<ApiResponse<getTotalStokPemasok>>, t: Throwable) {
-                // Log jika terjadi kegagalan jaringan atau error lainnya
+            override fun onFailure(call: Call<ApiResponse<List<StatsTotalPemasok>>>, t: Throwable) {
                 Log.e("API_FAILURE", "Request gagal: ${t.message}", t)
             }
         })
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

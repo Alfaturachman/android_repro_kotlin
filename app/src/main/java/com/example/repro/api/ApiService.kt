@@ -8,6 +8,7 @@ import com.example.repro.model.HargaKendaraan
 import com.example.repro.model.OlahRequest
 import com.example.repro.model.OlahResponse
 import com.example.repro.model.RiwayatPemasokResponse
+import com.example.repro.model.StatsTotalPemasok
 import com.example.repro.model.StokRequest
 import com.example.repro.model.UpdateHargaBanRequest
 import com.example.repro.model.getPemasok
@@ -59,6 +60,10 @@ interface ApiService {
     @Headers("Content-Type: application/json")
     @POST("get_total_pemasok.php")
     fun getTotalStokPemasok(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<getTotalStokPemasok>>
+
+    @Headers("Content-Type: application/json")
+    @POST("get_stats_pemasok.php")
+    fun getStatsPemasok(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<List<StatsTotalPemasok>>>
 
     @Headers("Content-Type: application/json")
     @POST("post_harga_ban.php")

@@ -62,18 +62,19 @@ class StokAdapter(
         holder.tvHargaPerKg.text = "Rp ${formatRupiah.format(stok.harga)}"
         holder.tvTotalHarga.text = "Rp ${formatRupiah.format(stok.total_harga)}"
 
+        // Button detail
+        holder.btnDetailStok.setOnClickListener {
+            handleButtonEditClick(stok, context)
+        }
+
         if (stok.status == "Sudah diambil") {
             holder.tvStatus.backgroundTintList = ContextCompat.getColorStateList(context, R.color.forest_green)
-            holder.btnDetailStok.visibility = View.GONE
+            holder.btnDetailStok.visibility = View.VISIBLE
             holder.btnHapusStok.visibility = View.GONE
         } else if (stok.status == "Belum diambil") {
             holder.tvStatus.backgroundTintList = ContextCompat.getColorStateList(context, R.color.amber_orange)
-            // Handle button edit
-            holder.btnDetailStok.setOnClickListener {
-                handleButtonEditClick(stok, context)
-            }
 
-            // Handle button hapus
+            // Button hapus
             holder.btnHapusStok.setOnClickListener {
                 handleButtonHapus(stok, context)
             }
@@ -92,6 +93,7 @@ class StokAdapter(
             putExtra("id_user", stok.id)
             putExtra("tanggal", stok.tanggal)
             putExtra("jenis_ban", stok.jenis)
+            putExtra("status", stok.status)
             putExtra("jumlah_stok", stok.jumlah_stok.toFloat())
             putExtra("harga_ban", stok.harga.toFloat())
             putExtra("total_harga_ban", stok.total_harga.toFloat())
