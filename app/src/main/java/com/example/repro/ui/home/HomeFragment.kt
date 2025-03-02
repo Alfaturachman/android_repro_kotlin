@@ -1,6 +1,6 @@
 package com.example.repro.ui.home
 
-import android.R
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.repro.api.ApiResponse
@@ -34,16 +35,19 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class HomeFragment : Fragment() {
+    
+    private var userId: Int = -1
     private lateinit var tvNama: TextView
-    private lateinit var pemasokTotalBelumAmbil: TextView
-    private lateinit var pemasokTotalSudahAmbil: TextView
+    private lateinit var tvSubTitle1: TextView
+    private lateinit var tvSubTitle2: TextView
+    private lateinit var TotalData1: TextView
+    private lateinit var TotalData2: TextView
     private lateinit var laporanDataPemasok: BarChart
-    private lateinit var CardViewPemasokTotalBelumDiambil: CardView
-    private lateinit var CardViewPemasokTotalSudahDiambil: CardView
-    private lateinit var CardViewPengelolaTotalBanBekas: CardView
-    private lateinit var CardViewPengelolaTotalSudahDiolah: CardView
+    private lateinit var CardViewTotalBelumDiambil: CardView
+    private lateinit var CardViewTotalSudahDiambil: CardView
     private var binding: FragmentHomeBinding? = null
 
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,41 +60,38 @@ class HomeFragment : Fragment() {
         val root = binding?.root
 
         // CardView Binding
-        CardViewPemasokTotalBelumDiambil = binding?.CardViewPemasokTotalBelumDiambil!!
-        CardViewPemasokTotalSudahDiambil = binding?.CardViewPemasokTotalSudahDiambil!!
-        CardViewPengelolaTotalBanBekas = binding?.CardViewPengelolaTotalBanBekas!!
-        CardViewPengelolaTotalSudahDiolah = binding?.CardViewPengelolaTotalSudahDiolah!!
+        CardViewTotalBelumDiambil = binding?.CardViewTotalBelumDiambil!!
+        CardViewTotalSudahDiambil = binding?.CardViewTotalSudahDiambil!!
 
         // TextView binding
         tvNama = binding?.tvNama!!
-        pemasokTotalBelumAmbil = binding?.pemasokTotalBelumAmbil!!
-        pemasokTotalSudahAmbil = binding?.pemasokTotalSudahAmbil!!
+        tvSubTitle1 = binding?.tvSubTitle1!!
+        tvSubTitle2 = binding?.tvSubTitle2!!
+        TotalData1 = binding?.TotalData1!!
+        TotalData2 = binding?.TotalData2!!
 
         // Mengambil BarChart dari binding
         laporanDataPemasok = binding?.laporanDataPemasok!!
 
-        // Nama dari SharedPreferences
-        val namaUser = getNamaFromSharedPreferences()
-        tvNama.text = namaUser
+        // Nama User dari SharedPreferences
+        val userNama = getNamaFromSharedPreferences()
+        tvNama.text = userNama
 
         // ID User dari SharedPreferences
-        val pemasokId = getPemasokIdFromSharedPreferences()
-        pemasokDataTotal(pemasokId)
+        userId = getuserIdFromSharedPreferences()
 
         // Level dari SharedPreferences
         val level = getLevelFromSharedPreferences()
         when (level) {
             "pemasok" -> {
-                CardViewPemasokTotalBelumDiambil.visibility = View.VISIBLE
-                CardViewPemasokTotalSudahDiambil.visibility = View.VISIBLE
-                CardViewPengelolaTotalBanBekas.visibility = View.GONE
-                CardViewPengelolaTotalSudahDiolah.visibility = View.GONE
+                pemasokStatsData(userId)
+                fetchPemasokTotalData(userId)
+                tvSubTitle1.text = "Belum diambil"
+                tvSubTitle2.text = "Sudah diambil"
             }
             "pengelola" -> {
-                CardViewPemasokTotalBelumDiambil.visibility = View.GONE
-                CardViewPemasokTotalSudahDiambil.visibility = View.GONE
-                CardViewPengelolaTotalBanBekas.visibility = View.VISIBLE
-                CardViewPengelolaTotalSudahDiolah.visibility = View.VISIBLE
+                tvSubTitle1.text = "Ban Bekas"
+                tvSubTitle2.text = "Crumb Rubber"
             }
             else -> {
                 Toast.makeText(requireContext(), "Level pengguna tidak valid", Toast.LENGTH_SHORT).show()
@@ -101,7 +102,7 @@ class HomeFragment : Fragment() {
         return root
     }
 
-    private fun getPemasokIdFromSharedPreferences(): Int {
+    private fun getuserIdFromSharedPreferences(): Int {
         val sharedPreferences = requireContext().getSharedPreferences("UserSession", Context.MODE_PRIVATE)
         return sharedPreferences.getInt("id_user", -1)
     }
@@ -116,7 +117,7 @@ class HomeFragment : Fragment() {
         return sharedPreferences.getString("level", "0")
     }
 
-    private fun pemasokDataTotal(userId: Int) {
+    private fun pemasokStatsData(userId: Int) {
         // Buat request body
         val requestBody = HashMap<String, Int>()
         requestBody["user_id"] = userId
@@ -158,12 +159,12 @@ class HomeFragment : Fragment() {
 
                     // Set data set untuk BarChart
                     val dataSetBelumDiambil = BarDataSet(entriesBelumDiambil, "Stok Belum Diambil").apply {
-                        color = Color.BLUE
+                        color = ContextCompat.getColor(requireContext(), com.example.repro.R.color.badge_warning)
                         valueTextColor = Color.BLACK
                     }
 
                     val dataSetSudahDiambil = BarDataSet(entriesSudahDiambil, "Stok Sudah Diambil").apply {
-                        color = Color.RED
+                        color = ContextCompat.getColor(requireContext(), com.example.repro.R.color.badge_success)
                         valueTextColor = Color.BLACK
                     }
 
@@ -212,6 +213,38 @@ class HomeFragment : Fragment() {
         })
     }
 
+    private fun fetchPemasokTotalData(userId: Int) {
+        val requestBody = hashMapOf("user_id" to userId)
+
+        RetrofitClient.instance.getTotalStokPemasok(requestBody)
+            .enqueue(object : Callback<ApiResponse<getTotalStokPemasok>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<getTotalStokPemasok>>,
+                    response: Response<ApiResponse<getTotalStokPemasok>>
+                ) {
+                    if (response.isSuccessful) {
+                        val pemasokResponse = response.body()
+
+                        if (pemasokResponse?.status == true) {
+                            pemasokResponse.data?.let { pemasok ->
+                                TotalData1.text = pemasok.belumDiambil.toString()
+                                TotalData2.text = pemasok.sudahDiambil.toString()
+                            }
+                        } else {
+                            Toast.makeText(requireContext(), pemasokResponse?.message ?: "Data tidak ditemukan", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Log.e("API_ERROR", "Response Error: ${response.errorBody()?.string()}")
+                        Toast.makeText(requireContext(), "Gagal mengambil data", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse<getTotalStokPemasok>>, t: Throwable) {
+                    Log.e("API_ERROR", "Failure: ${t.message}")
+                    Toast.makeText(requireContext(), "Terjadi kesalahan jaringan", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

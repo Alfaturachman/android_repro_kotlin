@@ -47,7 +47,7 @@ class TambahStokActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var latitude: Double? = null
     private var longitude: Double? = null
-    private var hargaKendaraanMap = mutableMapOf<String, String>() // Map untuk menyimpan harga kendaraan
+    private var hargaKendaraanMap = mutableMapOf<String, String>()
     private var pemasokId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {

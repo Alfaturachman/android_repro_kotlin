@@ -1,24 +1,39 @@
 package com.example.repro.ui.pemasok
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.res.Resources
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.repro.R
 import com.example.repro.api.ApiResponse
 import com.example.repro.api.RetrofitClient
 import com.example.repro.databinding.FragmentPemasokBinding
 import com.example.repro.model.getStokByPemasokId
 import com.example.repro.ui.pemasok.tambah.TambahStokActivity
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,6 +41,7 @@ import retrofit2.Response
 class PemasokFragment : Fragment() {
 
     private val viewModel: PemasokViewModel by viewModels()
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var _binding: FragmentPemasokBinding? = null
     private val binding get() = _binding!!
     private var pemasokId: Int = -1
@@ -55,6 +71,20 @@ class PemasokFragment : Fragment() {
             getStokData(pemasokId)
         } else {
             // Handle jika id_pemasok tidak ditemukan
+        }
+
+        // Mengecek izin lokasi
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+        }
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
+        // Mengecek apakah GPS aktif
+        if (!isGPSEnabled()) {
+            showGPSDialog()
         }
 
         // Tombol tambah stok
@@ -120,6 +150,58 @@ class PemasokFragment : Fragment() {
                 recyclerView.visibility = View.GONE
             }
         })
+    }
+
+    private fun isGPSEnabled(): Boolean {
+        val locationManager = requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+    }
+
+    private fun showGPSDialog() {
+        // Inflate layout custom dialog
+        val dialogView: View = LayoutInflater.from(requireContext()).inflate(R.layout.alert_dialog, null)
+
+        // AlertDialog dengan custom view dan tema
+        val alertDialog = AlertDialog.Builder(requireContext(), R.style.CustomAlertDialog)
+            .setView(dialogView)
+            .create()
+
+        // Inisialisasi custom dialog
+        val tvDialogTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
+        val tvDialogMessage = dialogView.findViewById<TextView>(R.id.tvDialogMessage)
+        val btnTidak = dialogView.findViewById<Button>(R.id.btnTidak)
+        val btnYa = dialogView.findViewById<Button>(R.id.btnYa)
+
+        tvDialogTitle.text = "GPS Tidak Aktif"
+        tvDialogMessage.text = "GPS harus diaktifkan untuk mendapatkan lokasi."
+        btnTidak.text = "Tidak"
+        btnYa.text = "Aktifkan"
+
+        // Button Tidak (Hanya menutup dialog)
+        btnTidak.setOnClickListener {
+            alertDialog.dismiss()
+        }
+
+        // Button Ya (Buka pengaturan lokasi)
+        btnYa.setOnClickListener {
+            startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+            alertDialog.dismiss() // Tutup dialog
+        }
+
+        // Jika dialog di-dismiss (diklik di luar atau tombol back)
+        alertDialog.setOnDismissListener {
+
+        }
+
+        // Tampilkan dialog
+        alertDialog.show()
+
+        // Ukuran dialog
+        val window = alertDialog.window
+        window?.setLayout(
+            (Resources.getSystem().displayMetrics.widthPixels * 0.90).toInt(),  // 90% dari lebar layar
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
     }
 
     private fun refreshData() {
