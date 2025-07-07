@@ -20,6 +20,7 @@ import com.example.repro.databinding.FragmentHomeBinding
 import com.example.repro.model.StatsTotalPemasok
 import com.example.repro.model.StatsTotalPengelola
 import com.example.repro.model.getTotalStokPemasok
+import com.example.repro.model.getTotalStokPengelola
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
@@ -43,6 +44,7 @@ class HomeFragment : Fragment() {
     private var userId: Int = -1
     private var userIdDetail: Int = -1
     private lateinit var tvLaporanStatistikData: TextView
+    private lateinit var tvLaporanTotalData: TextView
     private lateinit var tvNama: TextView
     private lateinit var tvSubTitle1: TextView
     private lateinit var tvSubTitle2: TextView
@@ -72,6 +74,7 @@ class HomeFragment : Fragment() {
         // TextView binding
         tvNama = binding?.tvNama!!
         tvLaporanStatistikData = binding?.tvLaporanStatistikData!!
+        tvLaporanTotalData = binding?.tvLaporanTotalData!!
         tvSubTitle1 = binding?.tvSubTitle1!!
         tvSubTitle2 = binding?.tvSubTitle2!!
         TotalData1 = binding?.TotalData1!!
@@ -97,15 +100,18 @@ class HomeFragment : Fragment() {
         val level = getLevelFromSharedPreferences()
         when (level) {
             "pemasok" -> {
-                pemasokStatsData(userIdDetail)
-                fetchPemasokTotalData(userId)
+                tvLaporanTotalData.text = "Laporan Total Stok Pemasok"
                 tvSubTitle1.text = "Belum diambil"
                 tvSubTitle2.text = "Sudah diambil"
+                pemasokStatsData(userIdDetail)
+                fetchPemasokTotalData(userId)
             }
             "pengelola" -> {
-                pengelolaStatsData(userId)
+                tvLaporanTotalData.text = "Laporan Total Stok Pengelola"
                 tvSubTitle1.text = "Ban Bekas"
                 tvSubTitle2.text = "Crumb Rubber"
+                pengelolaStatsData(userId)
+                fetchPengelolaTotalData(userId)
             }
             else -> {
                 Toast.makeText(requireContext(), "Level pengguna tidak valid", Toast.LENGTH_SHORT).show()
@@ -117,7 +123,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun fetchPemasokTotalData(userId: Int) {
-        val requestBody = hashMapOf("user_id" to userId)
+        val requestBody = hashMapOf("id_user" to userId)
 
         RetrofitClient.instance.getTotalStokPemasok(requestBody)
             .enqueue(object : Callback<ApiResponse<getTotalStokPemasok>> {
@@ -155,6 +161,45 @@ class HomeFragment : Fragment() {
             })
     }
 
+    private fun fetchPengelolaTotalData(userId: Int) {
+        val requestBody = hashMapOf("id_user" to userId)
+
+        RetrofitClient.instance.getTotalStokPengelola(requestBody)
+            .enqueue(object : Callback<ApiResponse<getTotalStokPengelola>> {
+                override fun onResponse(
+                    call: Call<ApiResponse<getTotalStokPengelola>>,
+                    response: Response<ApiResponse<getTotalStokPengelola>>
+                ) {
+                    Log.d("API_RESPONSE", "Response Code: ${response.code()}")
+
+                    if (response.isSuccessful) {
+                        val pengelolaResponse = response.body()
+                        Log.d("API_RESPONSE", "Response Body: $pengelolaResponse")
+
+                        if (pengelolaResponse?.status == true) {
+                            pengelolaResponse.data?.let { pengelola ->
+                                TotalData1.text = pengelola.totalBanBekas.toString()
+                                TotalData2.text = pengelola.totalCrumbRubber.toString()
+                                Log.d("API_SUCCESS", "Data berhasil diperoleh: $pengelola")
+                            }
+                        } else {
+                            Log.e("API_ERROR", "Pesan error dari server: ${pengelolaResponse?.message}")
+                            Toast.makeText(requireContext(), pengelolaResponse?.message ?: "Data tidak ditemukan", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        val errorBody = response.errorBody()?.string()
+                        Log.e("API_ERROR", "Response Error Body: $errorBody")
+                        Toast.makeText(requireContext(), "Gagal mengambil data", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ApiResponse<getTotalStokPengelola>>, t: Throwable) {
+                    Log.e("API_FAILURE", "Failure: ${t.message}", t)
+                    Toast.makeText(requireContext(), "Terjadi kesalahan jaringan", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
     private fun pemasokStatsData(userId: Int) {
         // Buat request body
         val requestBody = HashMap<String, Int>()
@@ -186,7 +231,7 @@ class HomeFragment : Fragment() {
 
                     // Gabungkan data stok berdasarkan bulan untuk tahun yang diinginkan
                     for (stokData in stokDataList) {
-                        if (stokData.tahun == tahun) { // Filter hanya tahun 2025
+                        if (stokData.tahun == tahun) { // Filter tahun
                             val bulanIndex = stokData.bulan - 1 // Konversi bulan (1-12) ke index (0-11)
                             if (bulanIndex in 0..11) {
                                 stokBelumDiambil[bulanIndex] += stokData.totalStokBelumDiambil.toFloat()
@@ -282,12 +327,21 @@ class HomeFragment : Fragment() {
                     val stokBanBekas = FloatArray(12) { 0f } // Stok belum diambil per bulan
                     val stokCrumbRubber = FloatArray(12) { 0f } // Stok sudah diambil per bulan
 
-                    // Gabungkan data stok berdasarkan bulan
+                    // Spinner tahun
+                    // val tahun = selectedYearFromDropdown
+
+                    // Tahun sekarang
+                    val calendar = Calendar.getInstance()
+                    val tahun = calendar.get(Calendar.YEAR)
+
+                    // Gabungkan data stok berdasarkan bulan untuk tahun yang diinginkan
                     for (stokData in stokDataList) {
-                        val bulanIndex = stokData.bulan - 1 // Konversi bulan (1-12) ke index (0-11)
-                        if (bulanIndex in 0..11) {
-                            stokBanBekas[bulanIndex] += stokData.totalBanBekas.toFloat()
-                            stokCrumbRubber[bulanIndex] += stokData.totalCrumbRubber.toFloat()
+                        if (stokData.tahun == tahun) { // Filter tahun
+                            val bulanIndex = stokData.bulan - 1 // Konversi bulan (1-12) ke index (0-11)
+                            if (bulanIndex in 0..11) {
+                                stokBanBekas[bulanIndex] += stokData.totalBanBekas.toFloat()
+                                stokCrumbRubber[bulanIndex] += stokData.totalCrumbRubber.toFloat()
+                            }
                         }
                     }
 

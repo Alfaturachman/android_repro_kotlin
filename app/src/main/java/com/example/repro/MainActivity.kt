@@ -76,10 +76,13 @@ class MainActivity : AppCompatActivity() {
 
         // Menu sesuai dengan role
         when (userLevel) {
-            "pengelola" ->
+            "pengelola" -> {
                 menu.findItem(R.id.nav_pengelola)?.isVisible = true
-            "pemasok" ->
+                menu.findItem(R.id.nav_harga_ban)?.isVisible = true
+            }
+            "pemasok" -> {
                 menu.findItem(R.id.nav_pemasok)?.isVisible = true
+            }
         }
     }
 

@@ -22,7 +22,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
-    private lateinit var usernameEditText: EditText
+
+    private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
     private lateinit var loginButton: Button
     private lateinit var pagesRegister: Button
@@ -31,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        usernameEditText = findViewById(R.id.etEmail)
+        emailEditText = findViewById(R.id.etEmail)
         passwordEditText = findViewById(R.id.etPassword)
         loginButton = findViewById(R.id.btn_login)
         pagesRegister = findViewById(R.id.btn_halaman_register)
@@ -45,11 +46,11 @@ class LoginActivity : AppCompatActivity() {
         }
 
         loginButton.setOnClickListener {
-            val username = usernameEditText.text.toString().trim()
+            val username = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
 
             if (TextUtils.isEmpty(username)) {
-                usernameEditText.error = "Username is required"
+                emailEditText.error = "Username is required"
                 return@setOnClickListener
             }
 
@@ -67,15 +68,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginUser(email: String, password: String) {
-        val apiService = RetrofitClient.instance
-
         val requestData = JSONObject()
         requestData.put("email", email)
         requestData.put("password", password)
 
         val body = RequestBody.create("application/json".toMediaTypeOrNull(), requestData.toString())
 
-        val call = apiService.loginUser(body)
+        val call = RetrofitClient.instance.loginUser(body)
 
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {

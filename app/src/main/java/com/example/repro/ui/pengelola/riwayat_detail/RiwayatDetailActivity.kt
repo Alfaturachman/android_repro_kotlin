@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
@@ -21,10 +22,12 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class RiwayatDetailActivity : AppCompatActivity() {
+
     private lateinit var etNamaPemilik: TextView
     private lateinit var etNamaUsaha: TextView
     private lateinit var etAlamat: TextView
     private lateinit var etNomorHp: TextView
+    private lateinit var cardViewPeringatan: CardView
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RiwayatDetailAdapter
     private val riwayatList = mutableListOf<RiwayatPemasokResponse>()
@@ -48,12 +51,13 @@ class RiwayatDetailActivity : AppCompatActivity() {
         pemasokId = intent.getIntExtra("PEMASOK_ID", -1)
 
         if (pemasokId != -1) {
-            Log.d("Pemasok ID", "Berhasil mengambil pemasok ID: $pemasokId")
             fetchPemasokData(pemasokId)
             loadRiwayatPemasok(pemasokId)
         } else {
             Toast.makeText(this, "ID Pemasok tidak valid", Toast.LENGTH_SHORT).show()
         }
+
+        cardViewPeringatan = findViewById(R.id.cardViewPeringatan)
 
         recyclerView = findViewById(R.id.recyclerViewRiwayatPemasok)
         recyclerView.layoutManager = LinearLayoutManager(this@RiwayatDetailActivity)
@@ -118,15 +122,18 @@ class RiwayatDetailActivity : AppCompatActivity() {
                         val riwayatResponse = response.body()
 
                         if (riwayatResponse?.status == true) {
+                            cardViewPeringatan.visibility = View.GONE
+
                             riwayatResponse.data?.let { data ->
                                 riwayatList.clear()
                                 riwayatList.addAll(data)
                                 adapter.notifyDataSetChanged()
                             }
                         } else {
+                            cardViewPeringatan.visibility = View.VISIBLE
+
                             val errorMessage = riwayatResponse?.message ?: "Data tidak ditemukan"
                             Log.e("API_ERROR", "Response failed: $errorMessage")
-                            Toast.makeText(this@RiwayatDetailActivity, errorMessage, Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         val errorBody = response.errorBody()?.string()

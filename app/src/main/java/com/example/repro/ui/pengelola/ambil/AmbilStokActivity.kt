@@ -147,12 +147,17 @@ class AmbilStokActivity : AppCompatActivity() {
 
                     tvTotalJarakKeseluruhan.text = "${"%.2f".format(totalDistance)}"
 
-                    val jarakPemasokList = mutableListOf<Double>()
-                    for (i in 1 until combinedList.size) {
-                        jarakPemasokList.add(distanceMatrix[0][i])
+                    val indexWithDistances = (1 until combinedList.size).map { index ->
+                        index to distanceMatrix[0][index]
                     }
 
-                    val sortedAmbilStokList = tour.drop(1).map { index -> combinedList[index] }
+                    val sortedByDistance = indexWithDistances.sortedBy { it.second }
+
+                    val sortedAmbilStokList = sortedByDistance.map { (index, _) ->
+                        combinedList[index]
+                    }
+
+                    val jarakPemasokList = sortedByDistance.map { (_, distance) -> distance }
 
                     adapter = AmbilStokAdapter(sortedAmbilStokList, jarakPemasokList, this@AmbilStokActivity)
                     recyclerView.adapter = adapter

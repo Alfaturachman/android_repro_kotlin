@@ -17,6 +17,7 @@ import com.example.repro.model.getStokByPemasokId
 import com.example.repro.model.getTotalStokPemasok
 import com.example.repro.model.getAmbilStok
 import com.example.repro.model.getRiwayatPemasok
+import com.example.repro.model.getTotalStokPengelola
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -72,7 +73,7 @@ interface ApiService {
 
     @Headers("Content-Type: application/json")
     @POST("get_total_pengelola.php")
-    fun getTotalStokPengelola(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<getTotalStokPemasok>>
+    fun getTotalStokPengelola(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<getTotalStokPengelola>>
 
     @Headers("Content-Type: application/json")
     @POST("post_harga_ban.php")

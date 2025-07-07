@@ -9,6 +9,7 @@ import com.example.repro.R
 import com.example.repro.ui.auth.LoginActivity
 
 class SplashScreenActivity : AppCompatActivity() {
+
     private val splashScreenDelay: Long = 2000
 
     override fun onCreate(savedInstanceState: Bundle?) {

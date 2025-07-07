@@ -23,12 +23,22 @@ object TSP {
         for (i in 0 until n) {
             for (j in 0 until n) {
                 if (i != j) {
-                    val loc1 = locations[i].lokasi.split(",")
-                    val loc2 = locations[j].lokasi.split(",")
-                    val lat1 = loc1[0].toDouble()
-                    val lon1 = loc1[1].toDouble()
-                    val lat2 = loc2[0].toDouble()
-                    val lon2 = loc2[1].toDouble()
+                    val loc1 = locations[i].lokasi.trim().replace(" ", "").split(",")
+                    val loc2 = locations[j].lokasi.trim().replace(" ", "").split(",")
+                    if (loc1.size != 2 || loc2.size != 2) {
+                        distanceMatrix[i][j] = Double.MAX_VALUE
+                        continue
+                    }
+
+                    val lat1 = loc1[0].toDoubleOrNull()
+                    val lon1 = loc1[1].toDoubleOrNull()
+                    val lat2 = loc2[0].toDoubleOrNull()
+                    val lon2 = loc2[1].toDoubleOrNull()
+
+                    if (lat1 == null || lon1 == null || lat2 == null || lon2 == null) {
+                        distanceMatrix[i][j] = Double.MAX_VALUE // skip invalid
+                        continue
+                    }
                     distanceMatrix[i][j] = haversineDistance(lat1, lon1, lat2, lon2)
                 } else {
                     distanceMatrix[i][j] = 0.0

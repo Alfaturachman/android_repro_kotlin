@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
 import com.example.repro.api.ApiResponse
 import com.example.repro.api.RetrofitClient
+import com.example.repro.helpers.DateHelper
 import com.example.repro.model.DeleteStok
 import com.example.repro.model.getStokByPemasokId
 import com.example.repro.ui.pemasok.detail.DetailStokActivity
@@ -38,6 +39,7 @@ class StokAdapter(
     inner class StokViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvJenis: TextView = itemView.findViewById(R.id.tvJenis)
         val tvStatus: TextView = itemView.findViewById(R.id.tvStatus)
+        val tvTanggal: TextView = itemView.findViewById(R.id.tvTanggal)
         val tvTotalBerat: TextView = itemView.findViewById(R.id.tvTotalBerat)
         val tvHargaPerKg: TextView = itemView.findViewById(R.id.tvHargaPerKg)
         val tvTotalHarga: TextView = itemView.findViewById(R.id.tvTotalHarga)
@@ -58,6 +60,7 @@ class StokAdapter(
 
         holder.tvJenis.text = "Jenis Ban: ${stok.jenis}"
         holder.tvStatus.text = stok.status
+        holder.tvTanggal.text = DateHelper.formatTanggal(stok.tanggal)
         holder.tvTotalBerat.text = "${stok.jumlah_stok} kg"
         holder.tvHargaPerKg.text = "Rp ${formatRupiah.format(stok.harga)}"
         holder.tvTotalHarga.text = "Rp ${formatRupiah.format(stok.total_harga)}"
