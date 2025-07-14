@@ -5,11 +5,14 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.example.repro.R
+import com.example.repro.api.RetrofitClient
 import com.example.repro.helpers.DateHelper
 import com.example.repro.helpers.RupiahHelper
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -48,15 +51,29 @@ class DetailStokActivity : AppCompatActivity(), OnMapReadyCallback {
         val tvHargaPerKg = findViewById<TextView>(R.id.tvHargaPerKg)
         val tvTotalHarga = findViewById<TextView>(R.id.tvTotalHarga)
         val tvAlamat = findViewById<TextView>(R.id.tvAlamat)
+        val tvKeterangan = findViewById<TextView>(R.id.tvKeterangan)
+        val imageView = findViewById<ImageView>(R.id.imageView)
 
         // Ambil data dari Intent
         val tanggal = intent.getStringExtra("tanggal") ?: "Tidak Ada Data"
         val jenis = intent.getStringExtra("jenis_ban") ?: "Tidak Ada Data"
         val status = intent.getStringExtra("status") ?: "Tidak Ada Data"
+        val keterangan = intent.getStringExtra("keterangan") ?: "Tidak Ada Data"
+        val foto = intent.getStringExtra("foto") ?: "Tidak Ada Data"
         lokasi = intent.getStringExtra("lokasi") ?: "Tidak Ada Data"
         val jumlahStok = intent.getFloatExtra("jumlah_stok", -1f).toDouble()
         val hargaPerKg = intent.getFloatExtra("harga_ban", -1f).toDouble()
         val totalHargaBan = intent.getFloatExtra("total_harga_ban", -1f).toDouble()
+
+        Log.d("DetailStock", "Tanggal: $tanggal")
+        Log.d("DetailStock", "Jenis Ban: $jenis")
+        Log.d("DetailStock", "Status: $status")
+        Log.d("DetailStock", "Keterangan: $keterangan")
+        Log.d("DetailStock", "Foto: $foto")
+        Log.d("DetailStock", "Lokasi: $lokasi")
+        Log.d("DetailStock", "Jumlah Stok: $jumlahStok")
+        Log.d("DetailStock", "Harga Per Kg: $hargaPerKg")
+        Log.d("DetailStock", "Total Harga Ban: $totalHargaBan")
 
         tvStatus.text = status
         if (status == "Sudah diambil") {
@@ -68,10 +85,17 @@ class DetailStokActivity : AppCompatActivity(), OnMapReadyCallback {
 
         tvTanggal.text = DateHelper.formatTanggal(tanggal)
         tvJenis.text = jenis
+        tvKeterangan.text = keterangan
         tvJumlahStok.text = "$jumlahStok kg"
         tvHargaPerKg.text = RupiahHelper.formatRupiah(hargaPerKg)
         tvTotalHarga.text = RupiahHelper.formatRupiah(totalHargaBan)
         tvAlamat.text = getAddressFromCoordinates(lokasi)
+
+        Glide.with(this)
+            .load("${RetrofitClient.BASE_URL_UPLOADS}${foto}")
+            .placeholder(R.drawable.ic_launcher_background)
+            .error(R.drawable.ic_launcher_background)
+            .into(imageView)
 
         // Inisialisasi MapView
         mapView = findViewById(R.id.mapView)

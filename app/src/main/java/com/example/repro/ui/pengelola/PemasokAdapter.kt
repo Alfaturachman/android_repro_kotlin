@@ -9,12 +9,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
-import com.example.repro.model.getPemasok
+import com.example.repro.model.Pemasok
 import com.example.repro.ui.pengelola.riwayat_detail.RiwayatDetailActivity
 
 class PemasokAdapter(
     private val context: Context,
-    private val getPemasokList: List<getPemasok>
+    private val pemasokList: List<Pemasok>
 ) : RecyclerView.Adapter<PemasokAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,14 +23,14 @@ class PemasokAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val pemasok = getPemasokList[position]
+        val pemasok = pemasokList[position]
         holder.tvNamaPemasok.text = pemasok.nama
         holder.tvNamaUsaha.text = pemasok.namaUsaha
         holder.tvNoHp.text = "${pemasok.noHp}"
         holder.tvAlamat.text = "${pemasok.alamat}"
     }
 
-    override fun getItemCount(): Int = getPemasokList.size
+    override fun getItemCount(): Int = pemasokList.size
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvNamaPemasok: TextView = itemView.findViewById(R.id.tv_nama_pemasok)
@@ -43,16 +43,16 @@ class PemasokAdapter(
             btnAmbil.setOnClickListener {
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
-                    val pemasok = getPemasokList[position]
+                    val pemasok = pemasokList[position]
                     handleAmbilClick(pemasok)
                 }
             }
         }
 
-        private fun handleAmbilClick(getPemasok: getPemasok) {
+        private fun handleAmbilClick(Pemasok: Pemasok) {
             val context = itemView.context
             val intent = Intent(context, RiwayatDetailActivity::class.java).apply {
-                putExtra("PEMASOK_ID", getPemasok.id)
+                putExtra("PEMASOK_ID", Pemasok.id)
             }
             context.startActivity(intent)
         }

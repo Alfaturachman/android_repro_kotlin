@@ -19,25 +19,18 @@ import com.example.repro.api.RetrofitClient
 import com.example.repro.databinding.FragmentHomeBinding
 import com.example.repro.model.StatsTotalPemasok
 import com.example.repro.model.StatsTotalPengelola
-import com.example.repro.model.getTotalStokPemasok
-import com.example.repro.model.getTotalStokPengelola
+import com.example.repro.model.TotalStokPemasok
+import com.example.repro.model.TotalStokPengelola
 import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.utils.ColorTemplate
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 
 class HomeFragment : Fragment() {
     
@@ -126,10 +119,10 @@ class HomeFragment : Fragment() {
         val requestBody = hashMapOf("id_user" to userId)
 
         RetrofitClient.instance.getTotalStokPemasok(requestBody)
-            .enqueue(object : Callback<ApiResponse<getTotalStokPemasok>> {
+            .enqueue(object : Callback<ApiResponse<TotalStokPemasok>> {
                 override fun onResponse(
-                    call: Call<ApiResponse<getTotalStokPemasok>>,
-                    response: Response<ApiResponse<getTotalStokPemasok>>
+                    call: Call<ApiResponse<TotalStokPemasok>>,
+                    response: Response<ApiResponse<TotalStokPemasok>>
                 ) {
                     Log.d("API_RESPONSE", "Response Code: ${response.code()}")
 
@@ -154,7 +147,7 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                override fun onFailure(call: Call<ApiResponse<getTotalStokPemasok>>, t: Throwable) {
+                override fun onFailure(call: Call<ApiResponse<TotalStokPemasok>>, t: Throwable) {
                     Log.e("API_FAILURE", "Failure: ${t.message}", t)
                     Toast.makeText(requireContext(), "Terjadi kesalahan jaringan", Toast.LENGTH_SHORT).show()
                 }
@@ -165,10 +158,10 @@ class HomeFragment : Fragment() {
         val requestBody = hashMapOf("id_user" to userId)
 
         RetrofitClient.instance.getTotalStokPengelola(requestBody)
-            .enqueue(object : Callback<ApiResponse<getTotalStokPengelola>> {
+            .enqueue(object : Callback<ApiResponse<TotalStokPengelola>> {
                 override fun onResponse(
-                    call: Call<ApiResponse<getTotalStokPengelola>>,
-                    response: Response<ApiResponse<getTotalStokPengelola>>
+                    call: Call<ApiResponse<TotalStokPengelola>>,
+                    response: Response<ApiResponse<TotalStokPengelola>>
                 ) {
                     Log.d("API_RESPONSE", "Response Code: ${response.code()}")
 
@@ -193,7 +186,7 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-                override fun onFailure(call: Call<ApiResponse<getTotalStokPengelola>>, t: Throwable) {
+                override fun onFailure(call: Call<ApiResponse<TotalStokPengelola>>, t: Throwable) {
                     Log.e("API_FAILURE", "Failure: ${t.message}", t)
                     Toast.makeText(requireContext(), "Terjadi kesalahan jaringan", Toast.LENGTH_SHORT).show()
                 }

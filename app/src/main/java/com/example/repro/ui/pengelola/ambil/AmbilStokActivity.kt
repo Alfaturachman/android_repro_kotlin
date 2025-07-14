@@ -1,7 +1,6 @@
 package com.example.repro.ui.pengelola.ambil
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -28,7 +27,7 @@ import com.example.repro.R
 import com.example.repro.utils.TSP
 import com.example.repro.api.ApiResponse
 import com.example.repro.api.RetrofitClient
-import com.example.repro.model.getAmbilStok
+import com.example.repro.model.AmbilStok
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import retrofit2.Call
@@ -122,8 +121,8 @@ class AmbilStokActivity : AppCompatActivity() {
     }
 
     private fun processAmbilStokData(latitude: Double, longitude: Double) {
-        RetrofitClient.instance.getAmbilStok().enqueue(object : Callback<ApiResponse<List<getAmbilStok>>> {
-            override fun onResponse(call: Call<ApiResponse<List<getAmbilStok>>>, response: Response<ApiResponse<List<getAmbilStok>>>) {
+        RetrofitClient.instance.getAmbilStok().enqueue(object : Callback<ApiResponse<List<AmbilStok>>> {
+            override fun onResponse(call: Call<ApiResponse<List<AmbilStok>>>, response: Response<ApiResponse<List<AmbilStok>>>) {
                 if (response.isSuccessful && response.body()?.status == true) {
                     val ambilStokList = response.body()?.data ?: emptyList()
 
@@ -176,7 +175,7 @@ class AmbilStokActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<ApiResponse<List<getAmbilStok>>>, t: Throwable) {
+            override fun onFailure(call: Call<ApiResponse<List<AmbilStok>>>, t: Throwable) {
                 Log.e("API_DEBUG", "Gagal memuat data dari API: ${t.message}")
             }
         })

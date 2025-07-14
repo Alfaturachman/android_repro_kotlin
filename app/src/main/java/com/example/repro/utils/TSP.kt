@@ -1,7 +1,7 @@
 package com.example.repro.utils
 
 import kotlin.math.*
-import com.example.repro.model.getAmbilStok
+import com.example.repro.model.AmbilStok
 
 object TSP {
 
@@ -16,7 +16,7 @@ object TSP {
         return R * c
     }
 
-    fun calculateDistanceMatrix(pengelolaLat: Double, pengelolaLong: Double, locations: List<getAmbilStok>): Array<DoubleArray> {
+    fun calculateDistanceMatrix(pengelolaLat: Double, pengelolaLong: Double, locations: List<AmbilStok>): Array<DoubleArray> {
         // Buat array lokasi dengan pengelola sebagai index 0
         val allLocations = mutableListOf<Pair<Double, Double>>()
 
@@ -98,7 +98,7 @@ object TSP {
     }
 
     // Fungsi helper untuk mendapatkan urutan pemasok berdasarkan hasil TSP
-    fun getOptimalRoute(pengelolaLat: Double, pengelolaLong: Double, pemasokList: List<getAmbilStok>): Pair<List<getAmbilStok>, Double> {
+    fun getOptimalRoute(pengelolaLat: Double, pengelolaLong: Double, pemasokList: List<AmbilStok>): Pair<List<AmbilStok>, Double> {
         if (pemasokList.isEmpty()) {
             return Pair(emptyList(), 0.0)
         }
@@ -110,7 +110,7 @@ object TSP {
         val tspResult = nearestNeighborTSP(distanceMatrix)
 
         // Urutkan pemasok berdasarkan hasil TSP
-        val sortedPemasok = mutableListOf<getAmbilStok>()
+        val sortedPemasok = mutableListOf<AmbilStok>()
         for (index in tspResult.first) {
             if (index != 0) { // Skip index 0 (pengelola)
                 val pemasokIndex = index - 1 // -1 karena index 0 untuk pengelola
@@ -125,7 +125,7 @@ object TSP {
 
     // Fungsi untuk mendapatkan jarak individual dari pengelola ke setiap pemasok
     // (untuk keperluan display di adapter)
-    fun getIndividualDistances(pengelolaLat: Double, pengelolaLong: Double, pemasokList: List<getAmbilStok>): List<Double> {
+    fun getIndividualDistances(pengelolaLat: Double, pengelolaLong: Double, pemasokList: List<AmbilStok>): List<Double> {
         return pemasokList.map { pemasok ->
             val koordinat = pemasok.lokasi.trim().replace(" ", "").split(",")
             if (koordinat.size == 2) {

@@ -1,6 +1,6 @@
 package com.example.repro.model
 
-data class getPemasok(
+data class Pemasok(
     var id: Int = 0,
     var idUser: Int = 0,
     var nama: String = "",

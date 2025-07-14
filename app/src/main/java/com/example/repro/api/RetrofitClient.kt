@@ -9,6 +9,8 @@ object RetrofitClient {
 
     private val BASE_URL = "http://$ip/supplychain_rubber/api/"
 
+    internal val BASE_URL_UPLOADS = "http://$ip/supplychain_rubber/uploads/"
+
     private val client = OkHttpClient.Builder().build()
 
     private val retrofit by lazy {

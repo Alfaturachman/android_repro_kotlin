@@ -1,6 +1,6 @@
 package com.example.repro.model
 
-data class getAmbilStok(
+data class AmbilStok(
     val id: String,
     val id_pemasok: String,
     val nama_pemasok: String,

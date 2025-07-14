@@ -22,7 +22,7 @@ import com.example.repro.R
 import com.example.repro.api.ApiResponse
 import com.example.repro.api.RetrofitClient
 import com.example.repro.model.AmbilStokRequest
-import com.example.repro.model.getAmbilStok
+import com.example.repro.model.AmbilStok
 import java.text.DecimalFormat
 import java.util.Locale
 import retrofit2.Call
@@ -30,7 +30,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class AmbilStokAdapter(
-    private val getAmbilStokList: List<getAmbilStok>,
+    private val ambilStokList: List<AmbilStok>,
     private val jarakPemasokList: List<Double>,
     private val startForResult: ActivityResultLauncher<Intent>,
     private val context: Context,
@@ -56,7 +56,7 @@ class AmbilStokAdapter(
     }
 
     override fun onBindViewHolder(holder: AmbilStokViewHolder, position: Int) {
-        val ambilStok = getAmbilStokList[position]
+        val ambilStok = ambilStokList[position]
         val jarak = jarakPemasokList[position]
 
         val formatter = DecimalFormat("#,###")
@@ -80,9 +80,9 @@ class AmbilStokAdapter(
         }
     }
 
-    override fun getItemCount(): Int = getAmbilStokList.size
+    override fun getItemCount(): Int = ambilStokList.size
 
-    private fun showAmbilDialog(ambilStok: getAmbilStok) {
+    private fun showAmbilDialog(ambilStok: AmbilStok) {
         // Inflate layout custom dialog
         val dialogView: View = LayoutInflater.from(context).inflate(R.layout.alert_dialog, null)
 
@@ -156,7 +156,7 @@ class AmbilStokAdapter(
         )
     }
 
-    private fun showMapsDialog(ambilStok: getAmbilStok) {
+    private fun showMapsDialog(ambilStok: AmbilStok) {
         val dialogView: View = LayoutInflater.from(context).inflate(R.layout.alert_dialog, null)
 
         val alertDialog = AlertDialog.Builder(context, R.style.CustomAlertDialog)
@@ -213,7 +213,7 @@ class AmbilStokAdapter(
         }
     }
 
-    private fun logAmbilStokData(ambilStok: getAmbilStok) {
+    private fun logAmbilStokData(ambilStok: AmbilStok) {
         val idUser = getUserId()
         Log.d("AmbilStokAdapter", """
             Data Stok yang Diambil:

@@ -1,13 +1,11 @@
 package com.example.repro.ui.pemasok
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
-import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
@@ -30,7 +28,7 @@ import com.example.repro.R
 import com.example.repro.api.ApiResponse
 import com.example.repro.api.RetrofitClient
 import com.example.repro.databinding.FragmentPemasokBinding
-import com.example.repro.model.getStokByPemasokId
+import com.example.repro.model.PemasokStok
 import com.example.repro.ui.pemasok.tambah.TambahStokActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -108,8 +106,8 @@ class PemasokFragment : Fragment() {
 
         val call = apiService.getStokByPemasokId(requestBody)
 
-        call.enqueue(object : Callback<ApiResponse<List<getStokByPemasokId>>> {
-            override fun onResponse(call: Call<ApiResponse<List<getStokByPemasokId>>>, response: Response<ApiResponse<List<getStokByPemasokId>>>) {
+        call.enqueue(object : Callback<ApiResponse<List<PemasokStok>>> {
+            override fun onResponse(call: Call<ApiResponse<List<PemasokStok>>>, response: Response<ApiResponse<List<PemasokStok>>>) {
                 if (response.isSuccessful) {
                     Log.d("ID Pemasok Fragment", "Response: ${response.body()}")
 
@@ -143,7 +141,7 @@ class PemasokFragment : Fragment() {
                 }
             }
 
-            override fun onFailure(call: Call<ApiResponse<List<getStokByPemasokId>>>, t: Throwable) {
+            override fun onFailure(call: Call<ApiResponse<List<PemasokStok>>>, t: Throwable) {
                 Log.e("ID Pemasok Fragment", "Request Failed: ${t.message}")
                 Toast.makeText(context, "Gagal mengambil data: ${t.message}", Toast.LENGTH_SHORT).show()
                 binding.cardViewPeringatan.visibility = View.VISIBLE

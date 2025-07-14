@@ -22,7 +22,7 @@ import com.example.repro.api.ApiResponse
 import com.example.repro.api.RetrofitClient
 import com.example.repro.helpers.DateHelper
 import com.example.repro.model.DeleteStok
-import com.example.repro.model.getStokByPemasokId
+import com.example.repro.model.PemasokStok
 import com.example.repro.ui.pemasok.detail.DetailStokActivity
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,7 +31,7 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class StokAdapter(
-    private val stokList: List<getStokByPemasokId>,
+    private val stokList: List<PemasokStok>,
     private val startForResult: ActivityResultLauncher<Intent>,
     private val onUserDeleted: () -> Unit // Callback untuk refresh data
 ) : RecyclerView.Adapter<StokAdapter.StokViewHolder>() {
@@ -88,7 +88,7 @@ class StokAdapter(
         return stokList.size
     }
 
-    private fun handleButtonEditClick(stok: getStokByPemasokId, context: Context) {
+    private fun handleButtonEditClick(stok: PemasokStok, context: Context) {
         Log.d("DetailStokActivity", "Sending data: id_user=${stok.id}, tanggal=${stok.tanggal}, jenis_ban=${stok.jenis}, " +
                 "jumlah_stok=${stok.jumlah_stok}, harga_ban=${stok.harga}, total_harga_ban=${stok.total_harga}, lokasi=${stok.lokasi}")
 
@@ -101,13 +101,15 @@ class StokAdapter(
             putExtra("harga_ban", stok.harga.toFloat())
             putExtra("total_harga_ban", stok.total_harga.toFloat())
             putExtra("lokasi", stok.lokasi)
+            putExtra("keterangan", stok.keterangan)
+            putExtra("foto", stok.foto)
         }
         startForResult.launch(intent)
     }
 
     // Button Hapus
     @SuppressLint("SetTextI18n")
-    private fun handleButtonHapus(stok: getStokByPemasokId, context: Context) {
+    private fun handleButtonHapus(stok: PemasokStok, context: Context) {
         // Inflate layout custom dialog
         val dialogView: View = LayoutInflater.from(context).inflate(R.layout.alert_dialog, null)
 

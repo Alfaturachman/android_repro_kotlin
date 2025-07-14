@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.api.RetrofitClient
 import com.example.repro.api.ApiResponse
 import com.example.repro.databinding.FragmentPengelolaBinding
-import com.example.repro.model.getPemasok
+import com.example.repro.model.Pemasok
 import com.example.repro.ui.pengelola.ambil.AmbilStokActivity
 import retrofit2.Call
 import retrofit2.Callback
@@ -64,10 +64,10 @@ class PengelolaFragment : Fragment() {
 
         Log.d("fetchPemasokData", "Memulai permintaan ke API...")
 
-        call.enqueue(object : Callback<ApiResponse<List<getPemasok>>> {
+        call.enqueue(object : Callback<ApiResponse<List<Pemasok>>> {
             override fun onResponse(
-                call: Call<ApiResponse<List<getPemasok>>>,
-                response: Response<ApiResponse<List<getPemasok>>>
+                call: Call<ApiResponse<List<Pemasok>>>,
+                response: Response<ApiResponse<List<Pemasok>>>
             ) {
                 Log.d("fetchPemasokData", "Response diterima. Code: ${response.code()}")
 
@@ -91,7 +91,7 @@ class PengelolaFragment : Fragment() {
                 }
             }
 
-            override fun onFailure(call: Call<ApiResponse<List<getPemasok>>>, t: Throwable) {
+            override fun onFailure(call: Call<ApiResponse<List<Pemasok>>>, t: Throwable) {
                 Log.e("fetchPemasokData", "Gagal mengambil data: ${t.message}", t)
                 Toast.makeText(context, "Gagal mengambil data: ${t.message}", Toast.LENGTH_SHORT).show()
             }

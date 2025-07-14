@@ -1,6 +1,6 @@
 package com.example.repro.model
 
-data class getStokByPemasokId(
+data class PemasokStok(
     val id: Int,
     val id_pemasok: Int,
     val tanggal: String,
@@ -9,5 +9,7 @@ data class getStokByPemasokId(
     val harga: Int,
     val total_harga: Int,
     val lokasi: String,
+    val keterangan: String,
+    val foto: String,
     val status: String
 )
