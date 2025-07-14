@@ -1,6 +1,7 @@
 package com.example.repro.ui.pengelola.ambil
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -17,6 +18,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -40,6 +42,10 @@ class AmbilStokActivity : AppCompatActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var tvTotalJarakKeseluruhan: TextView
 
+    val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        refreshData()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -48,7 +54,7 @@ class AmbilStokActivity : AppCompatActivity() {
         window.statusBarColor = resources.getColor(R.color.white, theme)
 
         // Inisialisasi TextView untuk total jarak
-        tvTotalJarakKeseluruhan = findViewById(R.id.tvTotalJarakKeseluruhan) // Tambahkan ini
+        tvTotalJarakKeseluruhan = findViewById(R.id.tvTotalJarakKeseluruhan)
 
         // Button Kembali
         val btnKembali: ImageButton = findViewById(R.id.btnKembali)
@@ -60,20 +66,18 @@ class AmbilStokActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerViewDaftarPemasok)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Ambil data dari API
-        fetchAmbilStokData()
-
+        // Inisialisasi FusedLocationProviderClient
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        if (isGPSEnabled()) {
 
+        // Cek GPS dan ambil data
+        if (isGPSEnabled()) {
+            fetchAmbilStokData()
         } else {
             showGPSDialog()
         }
     }
 
     private fun fetchAmbilStokData() {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
         // Pastikan izin lokasi sudah diberikan
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
@@ -118,49 +122,57 @@ class AmbilStokActivity : AppCompatActivity() {
     }
 
     private fun processAmbilStokData(latitude: Double, longitude: Double) {
-        val pengelolaLokasi = "$latitude,$longitude"
-
         RetrofitClient.instance.getAmbilStok().enqueue(object : Callback<ApiResponse<List<getAmbilStok>>> {
             override fun onResponse(call: Call<ApiResponse<List<getAmbilStok>>>, response: Response<ApiResponse<List<getAmbilStok>>>) {
                 if (response.isSuccessful && response.body()?.status == true) {
                     val ambilStokList = response.body()?.data ?: emptyList()
 
-                    val pengelola = getAmbilStok(
-                        id = "0",
-                        id_pemasok = "0",
-                        nama_pemasok = "Pengelola",
-                        nama_usaha = "-",
-                        tanggal = "-",
-                        jenis = "-",
-                        total_berat = "-",
-                        harga = "-",
-                        total_harga = "-",
-                        lokasi = pengelolaLokasi,
-                        status = "-"
+                    if (ambilStokList.isEmpty()) {
+                        tvTotalJarakKeseluruhan.text = "0.00"
+                        adapter = AmbilStokAdapter(
+                            emptyList(),
+                            emptyList(),
+                            startForResult,
+                            this@AmbilStokActivity,
+                            onDataUpdated = { refreshData() }
+                        )
+                        recyclerView.adapter = adapter
+                        return
+                    }
+
+                    // Gunakan fungsi getOptimalRoute yang sudah diperbaiki
+                    val (sortedAmbilStokList, totalDistance) = TSP.getOptimalRoute(
+                        pengelolaLat = latitude,
+                        pengelolaLong = longitude,
+                        pemasokList = ambilStokList
                     )
 
-                    val combinedList = mutableListOf(pengelola)
-                    combinedList.addAll(ambilStokList)
+                    // Set total jarak keseluruhan
+                    tvTotalJarakKeseluruhan.text = "%.2f".format(totalDistance)
 
-                    val distanceMatrix = TSP.calculateDistanceMatrix(combinedList)
-                    val (tour, totalDistance) = TSP.nearestNeighborTSP(distanceMatrix, 0)
+                    // Hitung jarak individual menggunakan fungsi yang terpisah
+                    val jarakPemasokList = TSP.getIndividualDistances(
+                        pengelolaLat = latitude,
+                        pengelolaLong = longitude,
+                        pemasokList = sortedAmbilStokList
+                    )
 
-                    tvTotalJarakKeseluruhan.text = "${"%.2f".format(totalDistance)}"
-
-                    val indexWithDistances = (1 until combinedList.size).map { index ->
-                        index to distanceMatrix[0][index]
-                    }
-
-                    val sortedByDistance = indexWithDistances.sortedBy { it.second }
-
-                    val sortedAmbilStokList = sortedByDistance.map { (index, _) ->
-                        combinedList[index]
-                    }
-
-                    val jarakPemasokList = sortedByDistance.map { (_, distance) -> distance }
-
-                    adapter = AmbilStokAdapter(sortedAmbilStokList, jarakPemasokList, this@AmbilStokActivity)
+                    // Set adapter dengan data yang sudah diurutkan
+                    adapter = AmbilStokAdapter(
+                        sortedAmbilStokList,
+                        jarakPemasokList,
+                        startForResult,
+                        this@AmbilStokActivity,
+                        onDataUpdated = { refreshData() }
+                    )
                     recyclerView.adapter = adapter
+
+                    // Debug logging
+                    Log.d("TSP_DEBUG", "Total Distance: $totalDistance")
+                    Log.d("TSP_DEBUG", "Sorted locations count: ${sortedAmbilStokList.size}")
+
+                } else {
+                    Log.e("API_DEBUG", "API response not successful or status false")
                 }
             }
 
@@ -175,17 +187,13 @@ class AmbilStokActivity : AppCompatActivity() {
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
-    // Fungsi untuk menampilkan dialog kustom
     private fun showGPSDialog() {
-        // Inflate layout custom dialog
         val dialogView: View = LayoutInflater.from(this).inflate(R.layout.alert_dialog, null)
 
-        // AlertDialog dengan custom view dan tema
         val alertDialog = AlertDialog.Builder(this, R.style.CustomAlertDialog)
             .setView(dialogView)
             .create()
 
-        // Inisialisasi custom dialog
         val tvDialogTitle = dialogView.findViewById<TextView>(R.id.tvDialogTitle)
         val tvDialogMessage = dialogView.findViewById<TextView>(R.id.tvDialogMessage)
         val btnTidak = dialogView.findViewById<Button>(R.id.btnTidak)
@@ -196,26 +204,39 @@ class AmbilStokActivity : AppCompatActivity() {
         btnTidak.text = "Tidak"
         btnYa.text = "Aktifkan"
 
-        // Button Tidak
         btnTidak.setOnClickListener {
-            alertDialog.dismiss() // Tutup dialog
+            alertDialog.dismiss()
         }
 
-        // Button Ya
         btnYa.setOnClickListener {
-            // Buka pengaturan lokasi
             startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-            alertDialog.dismiss() // Tutup dialog
+            alertDialog.dismiss()
         }
 
-        // Tampilkan dialog
         alertDialog.show()
-
-        // Ukuran dialog
         val window = alertDialog.window
         window?.setLayout(
-            (Resources.getSystem().displayMetrics.widthPixels * 0.90).toInt(),  // 90% dari lebar layar
+            (Resources.getSystem().displayMetrics.widthPixels * 0.90).toInt(),
             WindowManager.LayoutParams.WRAP_CONTENT
         )
+    }
+
+    private fun refreshData() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                location?.let {
+                    processAmbilStokData(it.latitude, it.longitude)
+                } ?: requestNewLocation()
+            }
+        } else {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 1 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            fetchAmbilStokData()
+        }
     }
 }

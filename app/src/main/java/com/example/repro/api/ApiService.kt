@@ -3,6 +3,7 @@ package com.example.repro.api
 import com.example.repro.model.HargaBanResponse
 import com.example.repro.model.postHargaBan
 import com.example.repro.model.Ambil
+import com.example.repro.model.AmbilStokRequest
 import com.example.repro.model.DeleteStok
 import com.example.repro.model.HargaKendaraan
 import com.example.repro.model.OlahRequest
@@ -18,6 +19,7 @@ import com.example.repro.model.getTotalStokPemasok
 import com.example.repro.model.getAmbilStok
 import com.example.repro.model.getRiwayatPemasok
 import com.example.repro.model.getTotalStokPengelola
+import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -25,7 +27,9 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 
 interface ApiService {
     // GET
@@ -66,6 +70,19 @@ interface ApiService {
     @POST("get_stats_pemasok.php")
     fun getStatsPemasok(@Body requestBody: HashMap<String, Int>): Call<ApiResponse<List<StatsTotalPemasok>>>
 
+    @Multipart
+    @POST("post_status_stok.php")
+    fun uploadStok(
+        @Part("id_pemasok") idPemasok: RequestBody,
+        @Part("jenis") jenis: RequestBody,
+        @Part("jumlah_stok") jumlahStok: RequestBody,
+        @Part("harga") harga: RequestBody,
+        @Part("total_harga") totalHarga: RequestBody,
+        @Part("lokasi") lokasi: RequestBody,
+        @Part("keterangan") keterangan: RequestBody,
+        @Part foto: MultipartBody.Part
+    ): Call<ApiResponse<String>>
+
     // Pengelola
     @Headers("Content-Type: application/json")
     @POST("get_stats_pengelola.php")
@@ -89,8 +106,8 @@ interface ApiService {
     @POST("post_olah.php")
     fun simpanOlah(@Body request: OlahRequest): Call<ApiResponse<OlahResponse>>
 
-    @POST("post_status_stok.php")
-    fun simpanStok(@Body request: StokRequest): Call<ApiResponse<StokRequest>>
+    @POST("post_ambil_stok.php")
+    fun kirimAmbilStok(@Body request: AmbilStokRequest): Call<ApiResponse<AmbilStokRequest>>
 
     // DELETE
     @Headers("Content-Type: application/json")

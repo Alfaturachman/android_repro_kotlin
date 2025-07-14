@@ -15,18 +15,27 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.example.repro.R
+import com.example.repro.api.ApiResponse
+import com.example.repro.api.RetrofitClient
+import com.example.repro.model.AmbilStokRequest
 import com.example.repro.model.getAmbilStok
 import java.text.DecimalFormat
 import java.util.Locale
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class AmbilStokAdapter(
     private val getAmbilStokList: List<getAmbilStok>,
     private val jarakPemasokList: List<Double>,
+    private val startForResult: ActivityResultLauncher<Intent>,
     private val context: Context,
-    private val prefs: SharedPreferences = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE),
+    private val onDataUpdated: () -> Unit // Tambahkan callback untuk refresh data
 ) : RecyclerView.Adapter<AmbilStokAdapter.AmbilStokViewHolder>() {
 
     class AmbilStokViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -100,9 +109,40 @@ class AmbilStokAdapter(
 
         // Button Ya
         btnYa.setOnClickListener {
-            Toast.makeText(context, "Berhasil mengambil stok dari ${ambilStok.nama_pemasok}", Toast.LENGTH_SHORT).show()
-            logAmbilStokData(ambilStok)
-            alertDialog.dismiss() // Tutup dialog
+            val requestBody = AmbilStokRequest(
+                id_pemasok = ambilStok.id_pemasok.toInt(),
+                id_pengelola = getUserId(),
+                id_stok = ambilStok.id.toInt(),
+                jumlah_stok = ambilStok.total_berat.toDouble()
+            )
+
+            RetrofitClient.instance.kirimAmbilStok(requestBody)
+                .enqueue(object : Callback<ApiResponse<AmbilStokRequest>> {
+                    override fun onResponse(
+                        call: Call<ApiResponse<AmbilStokRequest>>,
+                        response: Response<ApiResponse<AmbilStokRequest>>
+                    ) {
+                        Log.d("API_AMBIL_STOK", "Request: $requestBody")
+                        Log.d("API_AMBIL_STOK", "Response Code: ${response.code()}")
+                        Log.d("API_AMBIL_STOK", "Response Body: ${response.body()}")
+                        Log.d("API_AMBIL_STOK", "Response Message: ${response.message()}")
+
+                        if (response.isSuccessful && response.body()?.status == true) {
+                            Toast.makeText(context, "Berhasil mengirim ambil stok ke server", Toast.LENGTH_SHORT).show()
+                            // Panggil callback untuk refresh data
+                            onDataUpdated()
+                        } else {
+                            Toast.makeText(context, "Gagal mengirim data ke server", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ApiResponse<AmbilStokRequest>>, t: Throwable) {
+                        Log.e("API_AMBIL_STOK", "Gagal mengirim ambil stok: ${t.message}", t)
+                        Toast.makeText(context, "Terjadi kesalahan jaringan: ${t.message}", Toast.LENGTH_SHORT).show()
+                    }
+                })
+
+            alertDialog.dismiss()
         }
 
         // Tampilkan dialog
